@@ -6,52 +6,88 @@
 <title>Join Bicon Gym</title>
 
 <style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
 body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#111;
-    color:white;
+background:#111;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+color:white;
 }
 
 .container{
-    width:400px;
-    max-width:90%;
-    margin:50px auto;
-    background:#222;
-    padding:30px;
-    border-radius:10px;
+width:90%;
+max-width:500px;
+background:#222;
+padding:30px;
+border-radius:15px;
+box-shadow:0 0 20px rgba(255,60,0,.5);
 }
 
 h1{
-    text-align:center;
-    color:#ff3c00;
+text-align:center;
+margin-bottom:20px;
+color:#ff3c00;
 }
 
-input,select{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:none;
-    border-radius:5px;
+input,
+select,
+textarea{
+width:100%;
+padding:12px;
+margin:10px 0;
+border:none;
+border-radius:8px;
+font-size:16px;
 }
 
 button{
-    width:100%;
-    padding:15px;
-    background:#ff3c00;
-    color:white;
-    border:none;
-    border-radius:30px;
-    font-size:18px;
-    cursor:pointer;
+width:100%;
+padding:15px;
+background:#ff3c00;
+color:white;
+border:none;
+border-radius:30px;
+font-size:18px;
+cursor:pointer;
 }
 
 button:hover{
-    background:#ff5c2b;
+background:#ff5722;
 }
+
+.back{
+display:block;
+text-align:center;
+margin-top:20px;
+color:white;
+text-decoration:none;
+}
+
+.hero{
+    height:90vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background:linear-gradient(rgba(0,0,0,0.65),rgba(0,0,0,0.65)),
+    url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+}
+
 </style>
 
 </head>
+
 <body>
 
 <div class="container">
@@ -60,30 +96,27 @@ button:hover{
 
 <form>
 
-<input type="text" placeholder="Your Name" required>
+<input type="text" placeholder="Full Name" required>
 
-<input type="number" placeholder="Age" required>
+<input type="tel" placeholder="Phone Number" required>
 
-<input type="tel" placeholder="addhar number" required>
+<input type="email" placeholder="Email Address" required>
 
-<input type="text mask=##/##/####" placeholder="date of birth" required>
-
-<input type="tel" placeholder="Mobile Number" required>
-
-Gender<input type="radio name=a">
-       
 <select required>
-<option>Select Plan</option>
-<option>Joining + Monthly ₹1600</option>
+<option value="">Select Membership Plan</option>
+<option>Joining + Monthly ₹1600 + ₹600</option>
 <option>Monthly ₹800</option>
 <option>3 Months ₹2400</option>
 <option>6 Months ₹4000</option>
 </select>
 
+<textarea placeholder="Address"></textarea>
 
-<button type="submit">Submit</button>
+<button type="submit">Submit Registration</button>
 
 </form>
+
+<a href="index.html" class="back">⬅ Back to Home</a>
 
 </div>
 
