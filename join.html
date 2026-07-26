@@ -6,69 +6,48 @@
 <title>Join Bicon Gym</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
 body{
-background:#111;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#111;
+    color:white;
 }
 
 .container{
-width:90%;
-max-width:500px;
-background:#222;
-padding:30px;
-border-radius:15px;
-box-shadow:0 0 20px rgba(255,60,0,.5);
+    width:400px;
+    max-width:90%;
+    margin:50px auto;
+    background:#222;
+    padding:30px;
+    border-radius:10px;
 }
 
 h1{
-text-align:center;
-color:#ff3c00;
-margin-bottom:25px;
+    text-align:center;
+    color:#ff3c00;
 }
 
-input,
-select,
-textarea{
-width:100%;
-padding:12px;
-margin:10px 0;
-border:none;
-border-radius:8px;
-font-size:16px;
+input,select{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:5px;
 }
 
 button{
-width:100%;
-padding:15px;
-background:#ff3c00;
-color:white;
-border:none;
-border-radius:30px;
-font-size:18px;
-cursor:pointer;
+    width:100%;
+    padding:15px;
+    background:#ff3c00;
+    color:white;
+    border:none;
+    border-radius:30px;
+    font-size:18px;
+    cursor:pointer;
 }
 
 button:hover{
-background:#ff5a1f;
-}
-
-a{
-display:block;
-text-align:center;
-margin-top:20px;
-color:white;
-text-decoration:none;
+    background:#ff5c2b;
 }
 </style>
 
@@ -81,31 +60,23 @@ text-decoration:none;
 
 <form>
 
-<input type="text" placeholder="Full Name" required>
+<input type="text" placeholder="Your Name" required>
+
+<input type="number" placeholder="Age" required>
 
 <input type="tel" placeholder="Mobile Number" required>
 
-<input type="email" placeholder="Email">
-
-<input type="number" placeholder="Age">
-
 <select required>
-<option>Select Membership</option>
-<option>Joining + Monthly (₹1600 + ₹600)</option>
+<option>Select Plan</option>
+<option>Joining + Monthly ₹1600</option>
 <option>Monthly ₹800</option>
 <option>3 Months ₹2400</option>
 <option>6 Months ₹4000</option>
 </select>
 
-<textarea rows="4" placeholder="Address"></textarea>
-
-<button type="submit">
-Submit Registration
-</button>
+<button type="submit">Submit</button>
 
 </form>
-
-<a href="index.html">⬅ Back to Home</a>
 
 </div>
 
