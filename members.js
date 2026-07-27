@@ -1,106 +1,229 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
 import {
-  getFirestore,
-  collection,
-  getDocs,
-  doc,
-  updateDoc,
-  query,
-  orderBy
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    updateDoc,
+    query,
+    orderBy
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
+
+// Firebase Config
 const firebaseConfig = {
-  apiKey: "AIzaSyDJ3gjoxKgNTOpLZS-Qg0mrPmp3TVJV7HM",
-  authDomain: "bicon-gym.firebaseapp.com",
-  projectId: "bicon-gym",
-  storageBucket: "bicon-gym.firebasestorage.app",
-  messagingSenderId: "64202444264",
-  appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_ID",
+    appId: "YOUR_APP_ID"
 };
+
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+
 const table = document.getElementById("membersTable");
 const searchInput = document.getElementById("searchInput");
 
-async function loadMembers() {
+let allMembers = [];
 
-    table.innerHTML = "";
 
-    const snapshot = await getDocs(collection(db, "members"));
+// Load Members
+async function loadMembers(){
 
-    table.innerHTML = "";
+    try{
 
-   console.log(snapshot.size);
-
-    snapshot.forEach((doc) => {
-
-        const m = doc.data();
-
-        table.innerHTML += `
+        table.innerHTML = `
         <tr>
-            <td>${m.registrationNo || "-"}</td>
-            <td>${m.name || ""}</td>
-            <td>${m.phone || ""}</td>
-            <td>${m.age || ""}</td>
-            <td>${m.plan || ""}</td>
-            <td>₹${m.amount || ""}</td>
-            <td>${m.paymentDate || ""}</td>
-            <td>${m.expiryDate || ""}</td>
-            <td>${m.status || ""}</td>
-            <td>
-                <button class="edit-btn" data-id="${doc.id}">Edit</button>               </td>
+        <td colspan="10">Loading...</td>
         </tr>
         `;
-    });
 
-    addButtonEvents();
+
+        const q = query(
+            collection(db,"members"),
+            orderBy("regNo","asc")
+        );
+
+
+        const snapshot = await getDocs(q);
+
+
+        allMembers=[];
+
+
+        snapshot.forEach((docSnap)=>{
+
+            allMembers.push({
+                id:docSnap.id,
+                ...docSnap.data()
+            });
+
+        });
+
+
+        displayMembers(allMembers);
+
+
+    }catch(error){
+
+        console.log(error);
+
+        table.innerHTML=`
+        <tr>
+        <td colspan="10">
+        Error loading data
+        </td>
+        </tr>
+        `;
+
+    }
+
 }
 
-function addButtonEvents() {
 
-    document.querySelectorAll(".edit-btn").forEach(btn => {
-   
 
- btn.addEventListener("click", async function () {
+// Display Members
+function displayMembers(data){
 
-    const id = this.dataset.id;
+    table.innerHTML="";
 
-    const newStatus = prompt("Enter Status (Paid/Pending)");
 
-    if (!newStatus) return;
+    if(data.length===0){
 
-    await updateDoc(doc(db, "members", id), {
-        status: newStatus
+        table.innerHTML=`
+        <tr>
+        <td colspan="10">
+        No Members Found
+        </td>
+        </tr>
+        `;
+
+        return;
+    }
+
+
+    data.forEach(member=>{
+
+
+        let row=document.createElement("tr");
+
+
+        row.innerHTML=`
+
+        <td>${member.regNo || ""}</td>
+
+        <td>${member.name || ""}</td>
+
+        <td>${member.phone || ""}</td>
+
+        <td>${member.age || ""}</td>
+
+        <td>${member.plan || ""}</td>
+
+        <td>₹${member.amount || ""}</td>
+
+        <td>${member.paymentDate || ""}</td>
+
+        <td>${member.expiryDate || ""}</td>
+
+        <td>${member.status || ""}</td>
+
+
+        <td>
+        <button onclick="editMember('${member.id}')">
+        Edit
+        </button>
+        </td>
+
+        `;
+
+
+        table.appendChild(row);
+
     });
 
-    alert("Status Updated Successfully!");
 
-    loadMembers();
+}
+
+
+
+// Search
+
+searchInput.addEventListener("input",()=>{
+
+
+    let value=searchInput.value.toLowerCase();
+
+
+    let filtered=allMembers.filter(member=>{
+
+
+        return (
+
+        String(member.name).toLowerCase().includes(value)
+
+        ||
+
+        String(member.phone).includes(value)
+
+        );
+
+
+    });
+
+
+    displayMembers(filtered);
+
 
 });
-       
 
-    });
 
-}
 
-searchInput.addEventListener("keyup", function () {
+// Edit Function
 
-    const filter = this.value.toLowerCase();
+window.editMember = async function(id){
 
-    document.querySelectorAll("#membersTable tr").forEach(row => {
 
-        if (row.innerText.toLowerCase().includes(filter)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
+    let newStatus = prompt(
+        "Enter new status (Active/Expired)"
+    );
+
+
+    if(newStatus){
+
+
+        try{
+
+            await updateDoc(
+                doc(db,"members",id),
+                {
+                    status:newStatus
+                }
+            );
+
+
+            alert("Updated Successfully");
+
+
+            loadMembers();
+
+
+        }catch(error){
+
+            alert(error.message);
+
         }
 
-    });
+    }
 
-});
+}
+
+
+
 
 loadMembers();
