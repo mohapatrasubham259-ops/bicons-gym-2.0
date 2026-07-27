@@ -131,36 +131,29 @@ text-decoration:none;
 <a href="index.html" class="back">⬅ Back to Home</a>
 
 </div>
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYmuq65mYUZfpBbtuEvaD7PJMdqFNKfYndfZyxbj_TVJar-ynssZY9cA-ZnDfDJFaFeQ/exec";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
-document.querySelector("form").addEventListener("submit", async function(e){
-    e.preventDefault();
+const firebaseConfig = {
+  apiKey: "AIzaSyDJ3gjoxKgNTOpLZS-Qg0mrPmp3TVJV7HM",
+  authDomain: "bicon-gym.firebaseapp.com",
+  projectId: "bicon-gym",
+  storageBucket: "bicon-gym.firebasestorage.app",
+  messagingSenderId: "64202444264",
+  appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
+};
 
-    const data = {
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        age: document.getElementById("age").value,
-        email: document.getElementById("email").value,
-        address: document.getElementById("address").value,
-        plan: document.getElementById("plan").value,
-        amount: document.getElementById("amount").value,
-        paymentDate: document.getElementById("paymentDate").value,
-        expiryDate: document.getElementById("expiryDate").value,
-        status: document.getElementById("status").value
-    };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    await fetch(SCRIPT_URL,{
-        method:"POST",
-        body:JSON.stringify(data)
-    });
-
-    alert("Registration Successful!");
-    this.reset();
-});function updatePlan(){
+window.updatePlan = function () {
 
     const plan = document.getElementById("plan").value;
-
     const amount = document.getElementById("amount");
     const paymentDate = document.getElementById("paymentDate");
     const expiryDate = document.getElementById("expiryDate");
@@ -174,26 +167,54 @@ document.querySelector("form").addEventListener("submit", async function(e){
     if(plan==="Joining"){
         amount.value="1600";
         expiry.setDate(expiry.getDate()+30);
-    }
-
-    if(plan==="Monthly"){
+    }else if(plan==="Monthly"){
         amount.value="800";
         expiry.setDate(expiry.getDate()+30);
-    }
-
-    if(plan==="3 Months"){
+    }else if(plan==="3 Months"){
         amount.value="2400";
         expiry.setDate(expiry.getDate()+90);
-    }
-
-    if(plan==="6 Months"){
+    }else if(plan==="6 Months"){
         amount.value="4000";
         expiry.setDate(expiry.getDate()+180);
     }
 
     expiryDate.value = expiry.toISOString().split("T")[0];
-
 }
+
+document.querySelector("form").addEventListener("submit", async (e)=>{
+
+    e.preventDefault();
+
+    try{
+
+        await addDoc(collection(db,"members"),{
+
+            name:document.getElementById("name").value,
+            phone:document.getElementById("phone").value,
+            age:document.getElementById("age").value,
+            email:document.getElementById("email").value,
+            address:document.getElementById("address").value,
+            plan:document.getElementById("plan").value,
+            amount:document.getElementById("amount").value,
+            paymentDate:document.getElementById("paymentDate").value,
+            expiryDate:document.getElementById("expiryDate").value,
+            status:document.getElementById("status").value,
+            createdAt:new Date()
+
+        });
+
+        alert("Registration Successful!");
+
+        document.querySelector("form").reset();
+
+    }catch(err){
+
+        alert("Error : "+err.message);
+        console.log(err);
+
+    }
+
+});
 </script>
 <script type="module" src="firebase.js"></script>
 </body>
