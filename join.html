@@ -95,24 +95,34 @@ text-decoration:none;
 
 <form>
 
-<input type="text" placeholder="Full Name" required>
+<input id="name" type="text" placeholder="Full Name" required>
 
-<input type="tel" placeholder="Phone Number" required>
+<input id="phone" type="tel" placeholder="Phone Number" required>
 
-<input type="tel" placeholder="Age" required>
+<input id="age" type="number" placeholder="Age" required>
 
-<input type="email" placeholder="Email Address" required>
+<input id="email" type="email" placeholder="Email Address" required>
 
-
-<select required>
-<option value="">Select Membership Plan</option>
-<option>Joining + Monthly ₹1600 + ₹600</option>
-<option>Monthly ₹800</option>
-<option>3 Months ₹2400</option>
-<option>6 Months ₹4000</option>
+<select id="plan" required onchange="updatePlan()">
+    <option value="">Select Membership Plan</option>
+    <option value="Joining">Joining + Monthly</option>
+    <option value="Monthly">Monthly</option>
+    <option value="3 Months">3 Months</option>
+    <option value="6 Months">6 Months</option>
 </select>
+<textarea id="address" placeholder="Address"></textarea>
 
-<textarea placeholder="Address"></textarea>
+
+<input id="amount" type="number" placeholder="Amount" readonly>
+
+<input id="paymentDate" type="date" readonly>
+
+<input id="expiryDate" type="date" readonly>
+
+<select id="status">
+    <option>Paid</option>
+    <option>Pending</option>
+</select>
 
 <button type="submit">Submit Registration</button>
 
@@ -121,6 +131,70 @@ text-decoration:none;
 <a href="index.html" class="back">⬅ Back to Home</a>
 
 </div>
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYmuq65mYUZfpBbtuEvaD7PJMdqFNKfYndfZyxbj_TVJar-ynssZY9cA-ZnDfDJFaFeQ/exec";
 
+document.querySelector("form").addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const data = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        age: document.getElementById("age").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address").value,
+        plan: document.getElementById("plan").value,
+        amount: document.getElementById("amount").value,
+        paymentDate: document.getElementById("paymentDate").value,
+        expiryDate: document.getElementById("expiryDate").value,
+        status: document.getElementById("status").value
+    };
+
+    await fetch(SCRIPT_URL,{
+        method:"POST",
+        body:JSON.stringify(data)
+    });
+
+    alert("Registration Successful!");
+    this.reset();
+});function updatePlan(){
+
+    const plan = document.getElementById("plan").value;
+
+    const amount = document.getElementById("amount");
+    const paymentDate = document.getElementById("paymentDate");
+    const expiryDate = document.getElementById("expiryDate");
+
+    const today = new Date();
+
+    paymentDate.value = today.toISOString().split("T")[0];
+
+    let expiry = new Date(today);
+
+    if(plan==="Joining"){
+        amount.value="1600";
+        expiry.setDate(expiry.getDate()+30);
+    }
+
+    if(plan==="Monthly"){
+        amount.value="800";
+        expiry.setDate(expiry.getDate()+30);
+    }
+
+    if(plan==="3 Months"){
+        amount.value="2400";
+        expiry.setDate(expiry.getDate()+90);
+    }
+
+    if(plan==="6 Months"){
+        amount.value="4000";
+        expiry.setDate(expiry.getDate()+180);
+    }
+
+    expiryDate.value = expiry.toISOString().split("T")[0];
+
+}
+</script>
+<script type="module" src="firebase.js"></script>
 </body>
 </html>
