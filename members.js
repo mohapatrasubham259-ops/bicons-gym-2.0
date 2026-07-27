@@ -174,6 +174,7 @@ searchInput.addEventListener("input",()=>{
 
     });
 
+    console.log("All Members:", allMembers);
 
     displayMembers(filtered);
 
