@@ -1,93 +1,229 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bicon Gym Members</title>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
-<style>
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#111;
-    color:white;
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    updateDoc,
+    query,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+
+// Firebase Config
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_ID",
+    appId: "YOUR_APP_ID"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+const table = document.getElementById("membersTable");
+const searchInput = document.getElementById("searchInput");
+
+let allMembers = [];
+
+
+// Load Members
+async function loadMembers(){
+
+    try{
+
+        table.innerHTML = `
+        <tr>
+        <td colspan="10">Loading...</td>
+        </tr>
+        `;
+
+
+        const q = query(
+            collection(db,"members"),
+            orderBy("regNo","asc")
+        );
+
+
+        const snapshot = await getDocs(q);
+
+
+        allMembers=[];
+
+
+        snapshot.forEach((docSnap)=>{
+
+            allMembers.push({
+                id:docSnap.id,
+                ...docSnap.data()
+            });
+
+        });
+
+
+        displayMembers(allMembers);
+
+
+    }catch(error){
+
+        console.log(error);
+
+        table.innerHTML=`
+        <tr>
+        <td colspan="10">
+        Error loading data
+        </td>
+        </tr>
+        `;
+
+    }
+
 }
 
-header{
-    background:#000;
-    padding:20px;
-    text-align:center;
+
+
+// Display Members
+function displayMembers(data){
+
+    table.innerHTML="";
+
+
+    if(data.length===0){
+
+        table.innerHTML=`
+        <tr>
+        <td colspan="10">
+        No Members Found
+        </td>
+        </tr>
+        `;
+
+        return;
+    }
+
+
+    data.forEach(member=>{
+
+
+        let row=document.createElement("tr");
+
+
+        row.innerHTML=`
+
+        <td>${member.regNo || ""}</td>
+
+        <td>${member.name || ""}</td>
+
+        <td>${member.phone || ""}</td>
+
+        <td>${member.age || ""}</td>
+
+        <td>${member.plan || ""}</td>
+
+        <td>₹${member.amount || ""}</td>
+
+        <td>${member.paymentDate || ""}</td>
+
+        <td>${member.expiryDate || ""}</td>
+
+        <td>${member.status || ""}</td>
+
+
+        <td>
+        <button onclick="editMember('${member.id}')">
+        Edit
+        </button>
+        </td>
+
+        `;
+
+
+        table.appendChild(row);
+
+    });
+
+
 }
 
-h1{
-    color:#ff3c00;
+
+
+// Search
+
+searchInput.addEventListener("input",()=>{
+
+
+    let value=searchInput.value.toLowerCase();
+
+
+    let filtered=allMembers.filter(member=>{
+
+
+        return (
+
+        String(member.name).toLowerCase().includes(value)
+
+        ||
+
+        String(member.phone).includes(value)
+
+        );
+
+
+    });
+
+
+    displayMembers(filtered);
+
+
+});
+
+
+
+// Edit Function
+
+window.editMember = async function(id){
+
+
+    let newStatus = prompt(
+        "Enter new status (Active/Expired)"
+    );
+
+
+    if(newStatus){
+
+
+        try{
+
+            await updateDoc(
+                doc(db,"members",id),
+                {
+                    status:newStatus
+                }
+            );
+
+
+            alert("Updated Successfully");
+
+
+            loadMembers();
+
+
+        }catch(error){
+
+            alert(error.message);
+
+        }
+
+    }
+
 }
 
-table{
-    width:95%;
-    margin:20px auto;
-    border-collapse:collapse;
-}
 
-th,td{
-    border:1px solid #444;
-    padding:10px;
-    text-align:center;
-}
 
-th{
-    background:#ff3c00;
-}
 
-tr:nth-child(even){
-    background:#222;
-}
-
-tr:nth-child(odd){
-    background:#1a1a1a;
-}
-</style>
-
-</head>
-
-<body>
-
-<header>
-<div style="width:95%;margin:20px auto;">
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="🔍 Search by Name or Phone..."
-        style="width:100%;padding:12px;font-size:16px;border-radius:8px;border:1px solid #555;"
-    >
-</div>
-<h1>Bicon Gym Members</h1>
-</header>
-
-<table>
-
-<thead>
-
-<tr>
-    <th>Reg No.</th>
-    <th>Name</th>
-    <th>Phone</th>
-    <th>Age</th>
-    <th>Plan</th>
-    <th>Amount</th>
-    <th>Payment Date</th>
-    <th>Expiry Date</th>
-    <th>Status</th>
-    <th>Action</th>
-</tr>
-</thead>
-
-<tbody id="membersTable">
-
-</tbody>
-
-</table>
-
-<script type="module" src="./members.js"></script>
-</body>
-</html>
+loadMembers();
