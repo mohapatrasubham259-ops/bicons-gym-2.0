@@ -1,9 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  getDocs
+import { 
+getFirestore,
+collection,
+getDocs
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJ3gjoxKgNTOpLZS-Qg0mrPmp3TVJV7HM",
@@ -14,32 +15,36 @@ const firebaseConfig = {
   appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+
 const table = document.getElementById("membersTable");
 
-async function loadMembers() {
 
-    table.innerHTML = "";
+async function loadMembers(){
 
-    const querySnapshot = await getDocs(collection(db, "members"));
+const data = await getDocs(collection(db,"members"));
 
-    querySnapshot.forEach((doc) => {
+data.forEach((doc)=>{
 
-        const m = doc.data();
+let m = doc.data();
 
-        table.innerHTML += `
-        <tr>
-            <td>${m.name}</td>
-            <td>${m.phone}</td>
-            <td>${m.age}</td>
-            <td>${m.plan}</td>
-            <td>₹${m.amount}</td>
-            <td>${m.status}</td>
-        </tr>
-        `;
-    });
+table.innerHTML += `
+<tr>
+<td>${m.name}</td>
+<td>${m.phone}</td>
+<td>${m.age}</td>
+<td>${m.plan}</td>
+<td>₹${m.amount}</td>
+<td>${m.status}</td>
+</tr>
+`;
+
+});
+
 }
+
 
 loadMembers();
