@@ -188,7 +188,8 @@ document.querySelector("form").addEventListener("submit", async (e)=>{
     try{
 
         await addDoc(collection(db,"members"),{
-
+         
+            registrationNo: "BG" + Date.now(),
             name:document.getElementById("name").value,
             phone:document.getElementById("phone").value,
             age:document.getElementById("age").value,
