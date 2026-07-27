@@ -21,16 +21,16 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-const table = document.getElementById("membersTable");
+let table = document.getElementById("membersTable");
 
 
 async function loadMembers(){
 
-const snapshot = await getDocs(collection(db,"members"));
+let result = await getDocs(collection(db,"members"));
 
-snapshot.forEach((item)=>{
+result.forEach((doc)=>{
 
-const m = item.data();
+let m = doc.data();
 
 table.innerHTML += `
 <tr>
@@ -46,6 +46,5 @@ table.innerHTML += `
 });
 
 }
-
 
 loadMembers();
