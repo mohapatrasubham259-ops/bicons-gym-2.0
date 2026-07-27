@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { 
+
+import {
 getFirestore,
 collection,
 getDocs
@@ -25,17 +26,11 @@ const table = document.getElementById("membersTable");
 
 async function loadMembers(){
 
-let m = doc.data();
+const snapshot = await getDocs(collection(db,"members"));
 
-console.log(m);
+snapshot.forEach((item)=>{
 
-const data = await getDocs(collection(db,"members"));
-
-data.forEach((doc)=>{
-
-let m = doc.data();
-
-console.log(m);
+const m = item.data();
 
 table.innerHTML += `
 <tr>
