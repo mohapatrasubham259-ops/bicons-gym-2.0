@@ -52,16 +52,12 @@ table.innerHTML += `
 
 loadMembers();
 
-document.addEventListener("click", function (e) {
 
-    if (e.target.classList.contains("edit-btn")) {
-        alert("Edit button clicked");
-    }
-
-});
 
 window.editMember = function () {
-    alert("Edit button clicked");
+    let newStatus = prompt("Enter Status (Paid/Pending)");
+
+alert(newStatus);
 }
 
 document.getElementById("searchInput").addEventListener("keyup", function () {
