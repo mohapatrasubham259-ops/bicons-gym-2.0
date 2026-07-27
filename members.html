@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bicon Gym Members</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#111;
+    color:white;
+}
+
+header{
+    background:#000;
+    padding:20px;
+    text-align:center;
+}
+
+h1{
+    color:#ff3c00;
+}
+
+table{
+    width:95%;
+    margin:20px auto;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #444;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#ff3c00;
+}
+
+tr:nth-child(even){
+    background:#222;
+}
+
+tr:nth-child(odd){
+    background:#1a1a1a;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>Bicon Gym Members</h1>
+</header>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Name</th>
+<th>Phone</th>
+<th>Age</th>
+<th>Plan</th>
+<th>Amount</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody id="membersTable">
+
+</tbody>
+
+</table>
+
+<script type="module" src="members.js"></script>
+
+</body>
+</html>
