@@ -43,7 +43,7 @@ table.innerHTML += `
 <td>${m.paymentDate}</td>
 <td>${m.expiryDate}</td>
 <td>${m.status}</td>
-<td><button class="edit-btn">Edit</button></td>
+<td><button onclick="editMember()">Edit</button></td>
 </tr>
 `;
 });
@@ -53,11 +53,9 @@ table.innerHTML += `
 loadMembers();
 
 
-
 window.editMember = function () {
     let newStatus = prompt("Enter Status (Paid/Pending)");
-
-alert(newStatus);
+    alert(newStatus);
 }
 
 document.getElementById("searchInput").addEventListener("keyup", function () {
