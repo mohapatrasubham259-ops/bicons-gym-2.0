@@ -64,12 +64,26 @@ function addButtonEvents() {
     document.querySelectorAll(".edit-btn").forEach(btn => {
 
         btn.addEventListener("click", function () {
+      
+        const id = this.dataset.id;
+
+const newStatus = prompt("Enter Status (Paid/Pending)");
+
+if (!newStatus) return;
 
             const newStatus = prompt("Enter Status (Paid/Pending)");
 
 if (!newStatus) return;
 
-alert("New Status: " + newStatus);
+await updateDoc(doc(db, "members", id), {
+    status: newStatus
+});
+
+alert("Status Updated Successfully!");
+
+loadMembers();
+
+
         });
 
     });
