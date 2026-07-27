@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { 
+
+import {
 getFirestore,
 collection,
 getDocs
@@ -25,11 +26,28 @@ const table = document.getElementById("membersTable");
 
 async function loadMembers(){
 
+try{
+
 const data = await getDocs(collection(db,"members"));
+
+console.log("Total Members:", data.size);
+
+
+if(data.empty){
+    table.innerHTML = `
+    <tr>
+    <td colspan="6">No Members Found</td>
+    </tr>`;
+    return;
+}
+
 
 data.forEach((doc)=>{
 
 let m = doc.data();
+
+console.log(m);
+
 
 table.innerHTML += `
 <tr>
@@ -43,6 +61,18 @@ table.innerHTML += `
 `;
 
 });
+
+
+}catch(error){
+
+console.log("Firebase Error:", error);
+
+table.innerHTML = `
+<tr>
+<td colspan="6">Error Loading Data</td>
+</tr>`;
+
+}
 
 }
 
