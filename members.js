@@ -43,7 +43,7 @@ table.innerHTML += `
 <td>${m.paymentDate}</td>
 <td>${m.expiryDate}</td>
 <td>${m.status}</td>
-<td><button onclick="editMember()">Edit</button></td>
+<td><button class="edit-btn">Edit</button></td>
 </tr>
 `;
 });
