@@ -25,11 +25,15 @@ const table = document.getElementById("membersTable");
 
 async function loadMembers(){
 
+console.log("Loading members...");
+
 const data = await getDocs(collection(db,"members"));
 
 data.forEach((doc)=>{
 
 let m = doc.data();
+
+console.log(m);
 
 table.innerHTML += `
 <tr>
