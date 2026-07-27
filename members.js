@@ -1,11 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-
 import {
-getFirestore,
-collection,
-getDocs
+  getFirestore,
+  collection,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJ3gjoxKgNTOpLZS-Qg0mrPmp3TVJV7HM",
@@ -16,61 +14,71 @@ const firebaseConfig = {
   appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const table = document.getElementById("membersTable");
+const searchInput = document.getElementById("searchInput");
 
-let table = document.getElementById("membersTable");
+async function loadMembers() {
 
+    table.innerHTML = "";
 
-async function loadMembers(){
+    const snapshot = await getDocs(collection(db, "members"));
 
-let result = await getDocs(collection(db,"members"));
+    snapshot.forEach((doc) => {
 
-result.forEach((doc)=>{
+        const m = doc.data();
 
-let m = doc.data();
+        table.innerHTML += `
+        <tr>
+            <td>${m.registrationNo || "-"}</td>
+            <td>${m.name || ""}</td>
+            <td>${m.phone || ""}</td>
+            <td>${m.age || ""}</td>
+            <td>${m.plan || ""}</td>
+            <td>₹${m.amount || ""}</td>
+            <td>${m.paymentDate || ""}</td>
+            <td>${m.expiryDate || ""}</td>
+            <td>${m.status || ""}</td>
+            <td>
+                <button class="edit-btn">Edit</button>
+            </td>
+        </tr>
+        `;
+    });
 
-table.innerHTML += `
-<tr>
-<td>${m.registrationNo || "-"}</td>
-<td>${m.name}</td>
-<td>${m.phone}</td>
-<td>${m.age}</td>
-<td>${m.plan}</td>
-<td>₹${m.amount}</td>
-<td>${m.paymentDate}</td>
-<td>${m.expiryDate}</td>
-<td>${m.status}</td>
-<td><button onclick="editMember()">Edit</button></td>
-</tr>
-`;
-});
+    addButtonEvents();
+}
+
+function addButtonEvents() {
+
+    document.querySelectorAll(".edit-btn").forEach(btn => {
+
+        btn.addEventListener("click", function () {
+
+            alert("Edit feature will be added in next step.");
+
+        });
+
+    });
 
 }
 
-loadMembers();
+searchInput.addEventListener("keyup", function () {
 
+    const filter = this.value.toLowerCase();
 
-window.editMember = function () {
-    let newStatus = prompt("Enter Status (Paid/Pending)");
-    alert(newStatus);
-}
+    document.querySelectorAll("#membersTable tr").forEach(row => {
 
-document.getElementById("searchInput").addEventListener("keyup", function () {
-
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#membersTable tr");
-
-    rows.forEach(row => {
-        let text = row.innerText.toLowerCase();
-
-        if (text.includes(filter)) {
+        if (row.innerText.toLowerCase().includes(filter)) {
             row.style.display = "";
         } else {
             row.style.display = "none";
         }
+
     });
 
 });
+
+loadMembers();
