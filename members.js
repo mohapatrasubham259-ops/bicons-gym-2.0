@@ -6,7 +6,8 @@ import {
   getDocs,
   doc,
   updateDoc,
-  deleteDoc
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -49,9 +50,8 @@ async function loadMembers() {
             <td>${m.paymentDate || ""}</td>
             <td>${m.expiryDate || ""}</td>
             <td>${m.status || ""}</td>
-        <td>
-    <button class="edit-btn" data-id="${doc.id}">Edit</button>
-    <button class="delete-btn" data-id="${doc.id}">Delete</button>             </td>
+            <td>
+                <button class="edit-btn" data-id="${doc.id}">Edit</button>               </td>
         </tr>
         `;
     });
@@ -61,51 +61,32 @@ async function loadMembers() {
 
 function addButtonEvents() {
 
-    // Edit
     document.querySelectorAll(".edit-btn").forEach(btn => {
+   
 
-        btn.addEventListener("click", async function () {
+ btn.addEventListener("click", async function () {
 
-            const id = this.dataset.id;
+    const id = this.dataset.id;
 
-            const newStatus = prompt("Enter Status (Paid/Pending)");
+    const newStatus = prompt("Enter Status (Paid/Pending)");
 
-            if (!newStatus) return;
+    if (!newStatus) return;
 
-            await updateDoc(doc(db, "members", id), {
-                status: newStatus
-            });
-
-            alert("Status Updated Successfully!");
-
-            loadMembers();
-
-        });
-
+    await updateDoc(doc(db, "members", id), {
+        status: newStatus
     });
 
-    // Delete
-    document.querySelectorAll(".delete-btn").forEach(btn => {
+    alert("Status Updated Successfully!");
 
-        btn.addEventListener("click", async function () {
+    loadMembers();
 
-            const id = this.dataset.id;
-
-            const ok = confirm("Delete this member?");
-
-            if (!ok) return;
-
-            await deleteDoc(doc(db, "members", id));
-
-            alert("Member Deleted Successfully!");
-
-            loadMembers();
-
-        });
+});
+       
 
     });
 
 }
+
 searchInput.addEventListener("keyup", function () {
 
     const filter = this.value.toLowerCase();
