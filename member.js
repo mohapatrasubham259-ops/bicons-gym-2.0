@@ -25,7 +25,9 @@ const table = document.getElementById("membersTable");
 
 async function loadMembers(){
 
-console.log("Loading members...");
+let m = doc.data();
+
+console.log(m);
 
 const data = await getDocs(collection(db,"members"));
 
