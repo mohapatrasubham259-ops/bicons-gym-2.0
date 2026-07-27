@@ -45,7 +45,7 @@ async function loadMembers(){
 
 
         const snapshot = await getDocs(collection(db, "members"));
-
+        console.log("Documents:", snapshot.size);
 
         console.log("Members Count:", snapshot.size);
         console.log(snapshot.docs.map(doc => doc.data()));
