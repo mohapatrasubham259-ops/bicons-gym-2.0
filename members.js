@@ -51,8 +51,7 @@ async function loadMembers() {
             <td>${m.expiryDate || ""}</td>
             <td>${m.status || ""}</td>
             <td>
-                <button class="edit-btn">Edit</button>
-            </td>
+                <button class="edit-btn" data-id="${doc.id}">Edit</button>               </td>
         </tr>
         `;
     });
