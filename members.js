@@ -62,29 +62,26 @@ async function loadMembers() {
 function addButtonEvents() {
 
     document.querySelectorAll(".edit-btn").forEach(btn => {
+   
 
-        btn.addEventListener("click", function () {
-      
-        const id = this.dataset.id;
+ btn.addEventListener("click", async function () {
 
-const newStatus = prompt("Enter Status (Paid/Pending)");
+    const id = this.dataset.id;
 
-if (!newStatus) return;
+    const newStatus = prompt("Enter Status (Paid/Pending)");
 
-            const newStatus = prompt("Enter Status (Paid/Pending)");
+    if (!newStatus) return;
 
-if (!newStatus) return;
+    await updateDoc(doc(db, "members", id), {
+        status: newStatus
+    });
 
-await updateDoc(doc(db, "members", id), {
-    status: newStatus
+    alert("Status Updated Successfully!");
+
+    loadMembers();
+
 });
-
-alert("Status Updated Successfully!");
-
-loadMembers();
-
-
-        });
+       
 
     });
 
