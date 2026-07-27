@@ -44,13 +44,11 @@ async function loadMembers(){
         `;
 
 
-        const q = query(
-            collection(db,"members"),
-            orderBy("regNo","asc")
-        );
+        const snapshot = await getDocs(collection(db, "members"));
 
 
-        const snapshot = await getDocs(q);
+        console.log("Members Count:", snapshot.size);
+        console.log(snapshot.docs.map(doc => doc.data()));
 
 
         allMembers=[];
