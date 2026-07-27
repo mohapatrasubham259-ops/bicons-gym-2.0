@@ -1,10 +1,5 @@
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  doc,
-  updateDoc
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
 import {
   getFirestore,
   collection,
@@ -31,6 +26,8 @@ async function loadMembers() {
     table.innerHTML = "";
 
     const snapshot = await getDocs(collection(db, "members"));
+
+   console.log(snapshot.size);
 
     snapshot.forEach((doc) => {
 
