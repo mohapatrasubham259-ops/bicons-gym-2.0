@@ -34,15 +34,17 @@ let m = doc.data();
 
 table.innerHTML += `
 <tr>
+<td>${m.registrationNo || "-"}</td>
 <td>${m.name}</td>
 <td>${m.phone}</td>
 <td>${m.age}</td>
 <td>${m.plan}</td>
 <td>₹${m.amount}</td>
+<td>${m.paymentDate}</td>
+<td>${m.expiryDate}</td>
 <td>${m.status}</td>
 </tr>
 `;
-
 });
 
 }
