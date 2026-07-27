@@ -29,6 +29,8 @@ async function loadMembers() {
 
     const snapshot = await getDocs(collection(db, "members"));
 
+    table.innerHTML = "";
+
    console.log(snapshot.size);
 
     snapshot.forEach((doc) => {
