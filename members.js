@@ -63,8 +63,11 @@ function addButtonEvents() {
 
         btn.addEventListener("click", function () {
 
-            alert("Edit feature will be added in next step.");
+            const newStatus = prompt("Enter Status (Paid/Pending)");
 
+if (!newStatus) return;
+
+alert("New Status: " + newStatus);
         });
 
     });
