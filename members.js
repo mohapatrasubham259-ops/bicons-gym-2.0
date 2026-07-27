@@ -52,6 +52,10 @@ table.innerHTML += `
 
 loadMembers();
 
+window.editMember = function () {
+    alert("Edit button clicked");
+}
+
 document.getElementById("searchInput").addEventListener("keyup", function () {
 
     let filter = this.value.toLowerCase();
