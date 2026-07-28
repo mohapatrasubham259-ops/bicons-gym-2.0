@@ -5,7 +5,8 @@ import {
   getDocs,
   doc,
   updateDoc,
-  deleteDoc
+  deleteDoc,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 // Firebase Config
@@ -291,6 +292,51 @@ window.deleteMember = async function(id){
 }
 
 loadMembers();
+
+// ADD MEMBER SAVE
+
+document.getElementById("addSaveBtn").onclick = async function(){
+
+    const name = document.getElementById("newName").value;
+    const phone = document.getElementById("newPhone").value;
+    const age = document.getElementById("newAge").value;
+    const plan = document.getElementById("newPlan").value;
+    const amount = document.getElementById("newAmount").value;
+    const paymentDate = document.getElementById("newPaymentDate").value;
+    const expiryDate = document.getElementById("newExpiryDate").value;
+    const status = document.getElementById("newStatus").value;
+
+
+    if(!name || !phone){
+        alert("Name and Phone required");
+        return;
+    }
+
+
+    await addDoc(collection(db,"members"),{
+
+        name:name,
+        phone:phone,
+        age:age,
+        plan:plan,
+        amount:amount,
+        paymentDate:paymentDate,
+        expiryDate:expiryDate,
+        status:status,
+        createdAt:new Date()
+
+    });
+
+
+    alert("Member Added Successfully");
+
+
+    closeAddModal();
+
+
+    loadMembers();
+
+};
 
 document.getElementById("addMemberBtn").onclick = function(){
 
