@@ -1,13 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
 import {
   getFirestore,
   collection,
   getDocs,
-  query,
-  orderBy,
   doc,
   updateDoc
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
 
 // Firebase Config
 const firebaseConfig = {
@@ -19,169 +19,257 @@ const firebaseConfig = {
   appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+
 const membersTable = document.getElementById("membersTable");
 const searchInput = document.getElementById("searchInput");
+
 
 let allMembers = [];
 let selectedMemberId = "";
 
 
 // Load Members
+async function loadMembers(){
 
-    const snapshot = await getDocs(
-  collection(db, "members")
-);
-    allMembers = [];
+    try{
 
-    snapshot.forEach((doc) => {
+        const snapshot = await getDocs(
+            collection(db,"members")
+        );
 
-      allMembers.push({
-        id: doc.id,
-        ...doc.data()
-      });
+
+        allMembers = [];
+
+
+        snapshot.forEach((item)=>{
+
+            allMembers.push({
+
+                id:item.id,
+                ...item.data()
+
+            });
+
+        });
+
+
+        displayMembers(allMembers);
+
+
+    }catch(error){
+
+        console.log(error);
+
+        membersTable.innerHTML =
+        `
+        <tr>
+        <td colspan="10">
+        Data Load Failed
+        </td>
+        </tr>
+        `;
+
+    }
+
+}
+
+
+
+// Display Table
+function displayMembers(data){
+
+
+    membersTable.innerHTML="";
+
+
+    if(data.length === 0){
+
+        membersTable.innerHTML=
+        `
+        <tr>
+        <td colspan="10">
+        No Members Found
+        </td>
+        </tr>
+        `;
+
+        return;
+
+    }
+
+
+
+    data.forEach((member)=>{
+
+
+        let row=document.createElement("tr");
+
+
+        row.innerHTML=
+        `
+        <td>${member.regNo || ""}</td>
+        <td>${member.name || ""}</td>
+        <td>${member.phone || ""}</td>
+        <td>${member.age || ""}</td>
+        <td>${member.plan || ""}</td>
+        <td>₹${member.amount || ""}</td>
+        <td>${member.paymentDate || ""}</td>
+        <td>${member.expiryDate || ""}</td>
+        <td>${member.status || "Active"}</td>
+
+        <td>
+        <button onclick="openEdit('${member.id}')">
+        Edit
+        </button>
+        </td>
+
+        `;
+
+
+        membersTable.appendChild(row);
+
 
     });
 
 
-    displayMembers(allMembers);
+}
 
 
-  } catch(error){
 
-    console.log("Load Error:", error);
+// Open Popup
 
-    membersTable.innerHTML =
-    `<tr>
-      <td colspan="6">
-      Error loading members
-      </td>
-    </tr>`;
+window.openEdit=function(id){
 
-  }
+
+    let member =
+    allMembers.find(
+        m=>m.id===id
+    );
+
+
+    if(member){
+
+        selectedMemberId=id;
+
+
+        document.getElementById("editPlan").value =
+        member.plan || "";
+
+
+        document.getElementById("editStatus").value =
+        member.status || "Active";
+
+
+        document.getElementById("editModal").style.display="flex";
+
+    }
 
 }
 
 
-// Display Members
-function displayMembers(members) {
 
-  membersTable.innerHTML = "";
+// Close Popup
 
-  if (members.length === 0) {
-    membersTable.innerHTML = `
-      <tr>
-        <td colspan="10">No Members Found</td>
-      </tr>`;
-    return;
-  }
+window.closeModal=function(){
 
-  members.forEach((member) => {
+    document.getElementById("editModal").style.display="none";
 
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>${member.regNo || ""}</td>
-      <td>${member.name || ""}</td>
-      <td>${member.phone || ""}</td>
-      <td>${member.age || ""}</td>
-      <td>${member.plan || ""}</td>
-      <td>₹${member.amount || ""}</td>
-      <td>${member.paymentDate || ""}</td>
-      <td>${member.expiryDate || ""}</td>
-      <td>${member.status || ""}</td>
-      <td>
-        <button onclick="openModalById('${member.id}')">Edit</button>
-      </td>
-    `;
-
-    membersTable.appendChild(row);
-  });
 }
+
+
+
+
+// Save Update
+
+document.getElementById("saveBtn")
+.addEventListener("click",async()=>{
+
+
+    let plan =
+    document.getElementById("editPlan").value;
+
+
+    let status =
+    document.getElementById("editStatus").value;
+
+
+
+    try{
+
+
+        await updateDoc(
+            doc(db,"members",selectedMemberId),
+            {
+
+                plan:plan,
+                status:status
+
+            }
+        );
+
+
+        alert("Member Updated");
+
+
+        closeModal();
+
+
+        loadMembers();
+
+
+
+    }catch(error){
+
+
+        console.log(error);
+
+        alert("Update Failed");
+
+
+    }
+
+
+});
+
+
+
 
 // Search
-searchInput.addEventListener("input", () => {
 
-  const value = searchInput.value.toLowerCase();
+searchInput.addEventListener("input",()=>{
 
-  const filtered = allMembers.filter(member =>
-    (member.name || "").toLowerCase().includes(value) ||
-    (member.phone || "").includes(value)
-  );
 
-  displayMembers(filtered);
-
-});
+    let value =
+    searchInput.value.toLowerCase();
 
 
 
-// Edit Member
+    let result =
+    allMembers.filter(member=>
 
-document.addEventListener("click",(e)=>{
+        (member.name || "")
+        .toLowerCase()
+        .includes(value)
+
+        ||
+
+        (member.phone || "")
+        .includes(value)
+
+    );
 
 
- if(e.target.classList.contains("editBtn")){
-
-
-   const id = e.target.dataset.id;
-
-
-   editMember(id);
-
-
- }
+    displayMembers(result);
 
 
 });
-
-
-
-
- 
 
 
 
 // Start
-window.openModalById = function(id){
 
-    const member = allMembers.find(m => m.id === id);
-
-    if(member){
-        openModal(member);
-    }
-
-}
-
-document.getElementById("saveBtn").addEventListener("click", async () => {
-
-    const newPlan = document.getElementById("editPlan").value;
-
-    const newStatus = document.getElementById("editStatus").value;
-
-    try{
-
-        await updateDoc(doc(db,"members",selectedMemberId),{
-
-            plan:newPlan,
-            status:newStatus
-
-        });
-
-        alert("Member Updated");
-
-        closeModal();
-
-        loadMembers();
-
-    }catch(error){
-
-        console.error(error);
-
-        alert("Update Failed");
-
-    }
-
-});
 loadMembers();
