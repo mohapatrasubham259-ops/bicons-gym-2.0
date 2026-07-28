@@ -290,3 +290,15 @@ window.deleteMember = async function(id){
 
 }
 loadMembers();
+document.getElementById("addMemberBtn").onclick=function(){
+
+    document.getElementById("addModal").style.display="flex";
+
+}
+
+
+window.closeAddModal=function(){
+
+    document.getElementById("addModal").style.display="none";
+
+}

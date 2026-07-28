@@ -124,6 +124,54 @@ td.status-pending{
     color:#8B0000;
     font-weight:bold;
 }
+
+.table-container{
+    width:100%;
+    overflow-x:auto;
+}
+
+.status-paid{
+    color:#00c853;
+    font-weight:bold;
+}
+
+.status-pending{
+    color:#8B0000;
+    font-weight:bold;
+}
+
+button{
+    cursor:pointer;
+    padding:8px 14px;
+    border:none;
+    border-radius:6px;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+@media(max-width:768px){
+
+table{
+
+font-size:13px;
+
+}
+
+th,td{
+
+padding:8px;
+
+}
+
+.modal-box{
+
+width:92%;
+
+}
+
+}
 </style>
 
 </head>
@@ -131,33 +179,44 @@ td.status-pending{
 <body>
 
 <header>
-<div style="width:95%;margin:20px auto;">
+    <h1>Bicon Gym Members</h1>
+
+   <button id="addMemberBtn">➕ Add Member</button>
+
     <input
         type="text"
         id="searchInput"
-        placeholder="🔍 Search by Name or Phone..."
-        style="width:100%;padding:12px;font-size:16px;border-radius:8px;border:1px solid #555;"
-    >
-</div>
-<h1>Bicon Gym Members</h1>
+        placeholder="Search by Name or Phone..."
+        style="
+            width:95%;
+            max-width:500px;
+            padding:12px;addModal
+            margin-top:15px;
+            border-radius:8px;
+            border:none;
+            font-size:16px;
+        ">
 </header>
+
+<div class="table-container">
 
 <table>
 
 <thead>
 
 <tr>
-    <th>Reg No.</th>
+    <th>Reg No</th>
     <th>Name</th>
     <th>Phone</th>
     <th>Age</th>
     <th>Plan</th>
     <th>Amount</th>
-    <th>Payment Date</th>
-    <th>Expiry Date</th>
+    <th>Payment</th>
+    <th>Expiry</th>
     <th>Status</th>
     <th>Action</th>
 </tr>
+
 </thead>
 
 <tbody id="membersTable">
@@ -166,49 +225,99 @@ td.status-pending{
 
 </table>
 
+</div>
+
+
+
 <!-- Edit Popup -->
+
 <div id="editModal" class="modal">
 
-  <div class="modal-box">
+<div class="modal-box">
 
-    <h3>Edit Member</h3>
+<h2>Edit Member</h2>
 
-    <label>Plan</label>
-   <select id="editPlan">
+<label>Plan</label>
 
-  <option value="1 Month">1 Month</option>
-
-  <option value="3 Months">3 Months</option>
-
-  <option value="4 Months">4 Months</option>
-
-  <option value="6 Months">6 Months</option>
-
-  <option value="Joining + Monthly">Joining + Monthly</option>
-
+<select id="editPlan">
+<option>1 Month</option>
+<option>3 Months</option>
+<option>6 Months</option>
+<option>12 Months</option>
 </select>
 
+<label>Amount</label>
 
-    <label>Payment Status</label>
+<input
+type="number"
+id="editAmount">
+
+<label>Status</label>
 
 <select id="editStatus">
-  <option value="Paid">Paid</option>
-  <option value="Pending">Pending</option>
-</select>>
+<option value="Paid">Paid</option>
+<option value="Pending">Pending</option>
+</select>
 
-    <label>Amount</label>
-    <input type="number" id="editAmount">
+<div style="margin-top:20px;display:flex;gap:10px;">
 
-    <button id="saveBtn">Save</button>
+<button id="saveBtn">
+Save
+</button>
 
-    <button onclick="closeModal()">Close</button>
+<button onclick="closeModal()">
+Cancel
+</button>
 
-  </div>
+</div>
+
+<div id="addModal" class="modal">
+
+<div class="modal-box">
+
+<h2>Add Member</h2>
+
+<input id="newName" placeholder="Full Name">
+
+<input id="newPhone" placeholder="Phone Number">
+
+<input id="newAge" type="number" placeholder="Age">
+
+<select id="newPlan">
+<option value="">Select Plan</option>
+<option value="Monthly">Monthly</option>
+<option value="3 Months">3 Months</option>
+<option value="6 Months">6 Months</option>
+<option value="Joining">Joining + Monthly</option>
+</select>
+
+<input id="newAmount" type="number" placeholder="Amount">
+
+<input id="newPaymentDate" type="date">
+
+<input id="newExpiryDate" type="date">
+
+<select id="newStatus">
+<option value="Paid">Paid</option>
+<option value="Pending">Pending</option>
+</select>
+
+<div style="display:flex;gap:10px;margin-top:15px;">
+
+<button id="addSaveBtn">Save</button>
+
+<button onclick="closeAddModal()">Cancel</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
 <script type="module" src="members.js"></script>
-
-
 </body>
 </html>
