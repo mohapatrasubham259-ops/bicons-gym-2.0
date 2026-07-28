@@ -119,7 +119,15 @@ function displayMembers(data){
         <td>₹${member.amount || ""}</td>
         <td>${member.paymentDate || ""}</td>
         <td>${member.expiryDate || ""}</td>
-        <td>${member.status || "Active"}</td>
+        <td class="${
+    member.status === "Paid"
+        ? "status-paid"
+        : member.status === "Pending"
+        ? "status-pending"
+        : ""
+}">
+    ${member.status || ""}
+</td>
 
         <td>
         <button onclick="openEdit('${member.id}')">
