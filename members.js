@@ -1,5 +1,4 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-
 import {
   getFirestore,
   collection,
@@ -83,8 +82,22 @@ function displayMembers(data) {
 
   data.forEach((member) => {
 
+let status = "Paid";
+
+if (member.expiryDate) {
+
+    const today = new Date();
+
+    const expiry = new Date(member.expiryDate);
+
+    if (expiry < today) {
+        status = "Pending";
+    }
+
+}
+
     const statusColor =
-      member.status === "Paid"
+     status === "Paid"
         ? "#00c853"
         : member.status === "Pending"
         ? "#8B0000"
@@ -254,4 +267,26 @@ searchInput.addEventListener("input", () => {
 // =====================
 // Start
 // =====================
+
+window.deleteMember = async function(id){
+
+    if(!confirm("Delete this member?")) return;
+
+    try{
+
+        await deleteDoc(doc(db,"members",id));
+
+        alert("Member Deleted");
+
+        loadMembers();
+
+    }catch(error){
+
+        console.log(error);
+
+        alert("Delete Failed");
+
+    }
+
+}
 loadMembers();
