@@ -20,8 +20,7 @@ const firebaseConfig = {
   projectId: "bicon-gym",
   storageBucket: "bicon-gym.firebasestorage.app",
   messagingSenderId: "64202444264",
-  appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d",
-  measurementId: "G-HY45R5RJQ4"
+  appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
 };
 
 // Initialize Firebase
@@ -32,7 +31,6 @@ const db = getFirestore(app);
 // HTML elements
 const membersTable = document.getElementById("membersTable");
 const searchBox = document.getElementById("searchBox");
-
 
 let allMembers = [];
 
