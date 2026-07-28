@@ -5,9 +5,9 @@ import {
   collection,
   getDocs,
   doc,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-
 
 // Firebase Config
 const firebaseConfig = {
@@ -19,270 +19,239 @@ const firebaseConfig = {
   appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 
 const membersTable = document.getElementById("membersTable");
 const searchInput = document.getElementById("searchInput");
 
-
 let allMembers = [];
 let selectedMemberId = "";
 
-
+// =====================
 // Load Members
-async function loadMembers(){
+// =====================
+async function loadMembers() {
 
-    try{
+  try {
 
-        const snapshot = await getDocs(
-            collection(db,"members")
-        );
+    const snapshot = await getDocs(collection(db, "members"));
 
+    allMembers = [];
 
-        allMembers = [];
+    snapshot.forEach((item) => {
 
-
-        snapshot.forEach((item)=>{
-
-            allMembers.push({
-
-                id:item.id,
-                ...item.data()
-
-            });
-
-        });
-
-
-        displayMembers(allMembers);
-
-
-    }catch(error){
-
-        console.log(error);
-
-        membersTable.innerHTML =
-        `
-        <tr>
-        <td colspan="10">
-        Data Load Failed
-        </td>
-        </tr>
-        `;
-
-    }
-
-}
-
-
-
-// Display Table
-function displayMembers(data){
-
-
-    membersTable.innerHTML="";
-
-
-    if(data.length === 0){
-
-        membersTable.innerHTML=
-        `
-        <tr>
-        <td colspan="10">
-        No Members Found
-        </td>
-        </tr>
-        `;
-
-        return;
-
-    }
-
-
-
-    data.forEach((member)=>{
-
-
-        let row=document.createElement("tr");
-
-
-        row.innerHTML=
-        `
-        <td>${member.regNo || ""}</td>
-        <td>${member.name || ""}</td>
-        <td>${member.phone || ""}</td>
-        <td>${member.age || ""}</td>
-        <td>${member.plan || ""}</td>
-        <td>₹${member.amount || ""}</td>
-        <td>${member.paymentDate || ""}</td>
-        <td>${member.expiryDate || ""}</td>
-        <td class="${
-    member.status === "Paid"
-        ? "status-paid"
-        : member.status === "Pending"
-        ? "status-pending"
-        : ""
-}">
-    ${member.status || ""}
-</td>
-
-        <td>
-        <button onclick="openEdit('${member.id}')">
-        Edit
-        </button>
-        </td>
-
-        `;
-
-
-        membersTable.appendChild(row);
-
+      allMembers.push({
+        id: item.id,
+        ...item.data()
+      });
 
     });
 
+    displayMembers(allMembers);
+
+  } catch (error) {
+
+    console.error(error);
+
+    membersTable.innerHTML = `
+      <tr>
+        <td colspan="10">Data Load Failed</td>
+      </tr>
+    `;
+  }
 
 }
 
+// =====================
+// Display Members
+// =====================
+function displayMembers(data) {
 
+  membersTable.innerHTML = "";
 
-// Open Popup
+  if (data.length === 0) {
 
-window.openEdit=function(id){
+    membersTable.innerHTML = `
+      <tr>
+        <td colspan="10">No Members Found</td>
+      </tr>
+    `;
 
+    return;
+  }
 
-    let member =
-    allMembers.find(
-        m=>m.id===id
-    );
+  data.forEach((member) => {
 
+    const statusColor =
+      member.status === "Paid"
+        ? "#00c853"
+        : member.status === "Pending"
+        ? "#8B0000"
+        : "#ffffff";
 
-    if(member){
+    const row = document.createElement("tr");
 
-        selectedMemberId=id;
+    row.innerHTML = `
+      <td>${member.regNo || ""}</td>
+      <td>${member.name || ""}</td>
+      <td>${member.phone || ""}</td>
+      <td>${member.age || ""}</td>
+      <td>${member.plan || ""}</td>
+      <td>₹${member.amount || ""}</td>
+      <td>${member.paymentDate || ""}</td>
+      <td>${member.expiryDate || ""}</td>
 
+      <td style="color:${statusColor};font-weight:bold;">
+        ${member.status || ""}
+      </td>
 
-        document.getElementById("editPlan").value =
+      <td>
+        <button onclick="openEdit('${member.id}')">
+          ✏️ Edit
+        </button>
+
+        <button
+          onclick="deleteMember('${member.id}')"
+          style="
+            background:#d32f2f;
+            color:white;
+            margin-left:5px;
+            border:none;
+            padding:6px 10px;
+            border-radius:6px;
+            cursor:pointer;
+          ">
+          🗑 Delete
+        </button>
+      </td>
+    `;
+
+    membersTable.appendChild(row);
+
+  });
+
+}
+// =====================
+// Open Edit Popup
+// =====================
+window.openEdit = function (id) {
+
+    const member = allMembers.find(m => m.id === id);
+
+    if (!member) return;
+
+    selectedMemberId = id;
+
+    document.getElementById("editPlan").value =
         member.plan || "";
 
+    document.getElementById("editStatus").value =
+        member.status || "Paid";
 
-        document.getElementById("editStatus").value =
-        member.status || "Active";
-       
-        document.getElementById("editAmount").value =
-         member.amount || "";
+    document.getElementById("editAmount").value =
+        member.amount || "";
 
-        document.getElementById("editModal").style.display="flex";
+    document.getElementById("editModal").style.display = "flex";
 
-    }
-
-}
+};
 
 
-
+// =====================
 // Close Popup
+// =====================
+window.closeModal = function () {
 
-window.closeModal=function(){
+    document.getElementById("editModal").style.display = "none";
 
-    document.getElementById("editModal").style.display="none";
-
-}
-
-
+};
 
 
-// Save Update
+// =====================
+// Save Member
+// =====================
+document.getElementById("saveBtn").addEventListener("click", async () => {
 
-document.getElementById("saveBtn")
-.addEventListener("click",async()=>{
+    const plan = document.getElementById("editPlan").value;
 
+    const status = document.getElementById("editStatus").value;
 
-    let plan =
-    document.getElementById("editPlan").value;
+    const amount = Number(document.getElementById("editAmount").value);
 
+    try {
 
-    let status =
-    document.getElementById("editStatus").value;
-    
-    let amount =
-    document.getElementById("editAmount").value;
+        await updateDoc(doc(db, "members", selectedMemberId), {
+            plan: plan,
+            status: status,
+            amount: amount
+        });
 
-    console.log("New Amount:", amount);
-
-
-    try{
-
-
-        await updateDoc(
-            doc(db,"members",selectedMemberId),
-            {
-          plan:plan,
-          status:status,
-          amount:Number(amount)
-            }
-        );
-
-
-        alert("Member Updated");
-
+        alert("Member Updated Successfully");
 
         closeModal();
 
-
         loadMembers();
 
+    } catch (error) {
 
-
-    }catch(error){
-
-
-        console.log(error);
+        console.error(error);
 
         alert("Update Failed");
 
+    }
+
+});
+
+
+// =====================
+// Delete Member
+// =====================
+window.deleteMember = async function (id) {
+
+    const ok = confirm("Are you sure you want to delete this member?");
+
+    if (!ok) return;
+
+    try {
+
+        await deleteDoc(doc(db, "members", id));
+
+        alert("Member Deleted Successfully");
+
+        loadMembers();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Delete Failed");
 
     }
 
-
-});
-
+};
 
 
-
+// =====================
 // Search
+// =====================
+searchInput.addEventListener("input", () => {
 
-searchInput.addEventListener("input",()=>{
+    const value = searchInput.value.toLowerCase();
 
+    const result = allMembers.filter(member =>
 
-    let value =
-    searchInput.value.toLowerCase();
+        (member.name || "").toLowerCase().includes(value) ||
 
-
-
-    let result =
-    allMembers.filter(member=>
-
-        (member.name || "")
-        .toLowerCase()
-        .includes(value)
-
-        ||
-
-        (member.phone || "")
-        .includes(value)
+        (member.phone || "").includes(value)
 
     );
 
-
     displayMembers(result);
-
 
 });
 
 
-
+// =====================
 // Start
-
+// =====================
 loadMembers();
