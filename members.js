@@ -61,7 +61,7 @@ async function loadMembers() {
 function displayMembers(data) {
 
  const tableBody = document.getElementById("membersTableBody");
-  if (!tablebody) {
+  if (!tbody) {
     console.error("membersTableBody not found");
     return;
   }
