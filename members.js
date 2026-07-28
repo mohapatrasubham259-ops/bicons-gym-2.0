@@ -228,18 +228,16 @@ window.editMember = async function(id){
 
 }
 
-window.deleteMember = async function(id){
+window.deleteMember = async function(id) {
 
-    if(!confirm("Delete this member?")) return;
+    if (!confirm("Delete this member?")) return;
 
-    try{
+    await deleteDoc(doc(db, "members", id));
 
-        await deleteDoc(doc(db,"members",id));
+    alert("Member deleted successfully!");
 
-        alert("Member Deleted");
-
-        loadMembers();
-
+    loadMembers();
+}
     }catch(error){
 
         alert(error.message);
