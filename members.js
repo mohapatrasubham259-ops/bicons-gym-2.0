@@ -71,39 +71,42 @@ async function loadMembers() {
 
 
 // Display Members
-function displayMembers(members){
+function displayMembers(members) {
 
   membersTable.innerHTML = "";
 
+  if (members.length === 0) {
+    membersTable.innerHTML = `
+      <tr>
+        <td colspan="10">No Members Found</td>
+      </tr>`;
+    return;
+  }
 
-  members.forEach((member)=>{
-
+  members.forEach((member) => {
 
     const row = document.createElement("tr");
 
-
-   row.innerHTML = `
-<td>${member.regNo || ""}</td>
-<td>${member.name || ""}</td>
-<td>${member.phone || ""}</td>
-<td>${member.age || ""}</td>
-<td>${member.plan || ""}</td>
-<td>₹${member.amount || ""}</td>
-<td>${member.paymentDate || ""}</td>
-<td>${member.expiryDate || ""}</td>
-<td>${member.status || ""}</td>
-<td><button onclick="editMember('${member.id}')">Edit</button></td>
-`;
-
+    row.innerHTML = `
+      <td>${member.regNo || ""}</td>
+      <td>${member.name || ""}</td>
+      <td>${member.phone || ""}</td>
+      <td>${member.age || ""}</td>
+      <td>${member.plan || ""}</td>
+      <td>₹${member.amount || ""}</td>
+      <td>${member.paymentDate || ""}</td>
+      <td>${member.expiryDate || ""}</td>
+      <td>${member.status || ""}</td>
+      <td>
+        <button onclick="editMember('${member.id}')">
+          Edit
+        </button>
+      </td>
+    `;
 
     membersTable.appendChild(row);
-
-
   });
-
-
 }
-
 
 // Search
 searchInput.addEventListener("input", () => {
@@ -141,77 +144,32 @@ document.addEventListener("click",(e)=>{
 });
 
 
-
 async function editMember(id){
 
+  const newPlan = prompt("Enter New Plan");
 
- const newPlan = prompt(
- "Enter New Plan"
- );
+  if(!newPlan) return;
 
+  try{
 
- if(!newPlan) return;
-
-
-
- try{
-
-
-  await updateDoc(
-    doc(db,"members",id),
-    {
-      plan:newPlan
-    }
-  );
-
-
-  alert("Updated Successfully");
-
-
-  loadMembers();
-async function loadMembers() {
-  try {
-    membersTable.innerHTML =
-      `<tr><td colspan="10">Loading...</td></tr>`;
-
-    const q = query(
-      collection(db, "members"),
-      orderBy("name")
-    );
-
-    const snapshot = await getDocs(q);
-
-    allMembers = [];
-
-    snapshot.forEach((docSnap) => {
-      allMembers.push({
-        id: docSnap.id,
-        ...docSnap.data()
-      });
+    await updateDoc(doc(db,"members",id), {
+      plan: newPlan
     });
 
-    displayMembers(allMembers);
+    alert("Updated Successfully");
 
-  } catch (error) {
-    console.error(error);
+    loadMembers();
 
-    membersTable.innerHTML =
-      `<tr><td colspan="10">Error loading members</td></tr>`;
+  }catch(error){
+
+    console.log(error);
+    alert("Update Failed");
+
   }
-}
-
- }
- catch(error){
-
-  console.log(error);
-
-  alert("Update Failed");
-
- }
-
 
 }
 
+window.editMember = editMember;
 
 
 
