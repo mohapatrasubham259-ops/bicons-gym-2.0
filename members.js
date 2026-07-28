@@ -97,7 +97,7 @@ window.addEventListener("DOMContentLoaded", () => {
 function displayMembers(data) {
 
 
-    const tableBody = document.getElementById("membersTable");
+   const tableBody = document.getElementById("membersTable");
 
 
     if (!tableBody) {
