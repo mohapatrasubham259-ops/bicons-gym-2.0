@@ -130,7 +130,18 @@ function displayMembers(data){
 
         <td>${member.expiryDate || ""}</td>
 
-        <td>${member.status || ""}</td>
+        <td style="
+    font-weight: bold;
+    color: ${
+        member.status?.toLowerCase() === "paid"
+            ? "green"
+            : member.status?.toLowerCase() === "pending"
+            ? "red"
+            : "white"
+    };
+">
+    ${member.status || ""}
+</td>
 
 
         <td>
