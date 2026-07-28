@@ -87,10 +87,11 @@ async function loadMembers() {
 console.log("Members JS Started");
 window.addEventListener("DOMContentLoaded", () => {
 
+    console.log("Loading Members...");
+
     loadMembers();
 
 });
-
 // ===============================
 // PART 3: DISPLAY MEMBERS + SEARCH
 // ===============================
