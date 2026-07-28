@@ -18,12 +18,12 @@ import {
 
 // Firebase Config
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDJ3gjoxKgNTOpLZS-Qg0mrPmp3TVJV7HM",
+  authDomain: "bicon-gym.firebaseapp.com",
+  projectId: "bicon-gym",
+  storageBucket: "bicon-gym.firebasestorage.app",
+  messagingSenderId: "64202444264",
+  appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
 };
 
 
