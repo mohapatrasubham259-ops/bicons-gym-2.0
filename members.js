@@ -289,16 +289,17 @@ window.deleteMember = async function(id){
     }
 
 }
+
 loadMembers();
-document.getElementById("addMemberBtn").onclick=function(){
 
-    document.getElementById("addModal").style.display="flex";
+document.getElementById("addMemberBtn").onclick = function(){
 
-}
+    document.getElementById("addModal").style.display = "flex";
 
+};
 
-window.closeAddModal=function(){
+window.closeAddModal = function(){
 
-    document.getElementById("addModal").style.display="none";
+    document.getElementById("addModal").style.display = "none";
 
 }
