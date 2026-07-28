@@ -201,6 +201,7 @@ document.getElementById("saveBtn")
     let amount =
     document.getElementById("editAmount").value;
 
+    console.log("New Amount:", amount);
 
 
     try{
