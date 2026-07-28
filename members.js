@@ -162,7 +162,9 @@ window.openEdit=function(id){
 
         document.getElementById("editStatus").value =
         member.status || "Active";
-
+       
+        document.getElementById("editAmount").value =
+         member.amount || "";
 
         document.getElementById("editModal").style.display="flex";
 
@@ -195,6 +197,9 @@ document.getElementById("saveBtn")
 
     let status =
     document.getElementById("editStatus").value;
+    
+    let amount =
+    document.getElementById("editAmount").value;
 
 
 
@@ -204,10 +209,9 @@ document.getElementById("saveBtn")
         await updateDoc(
             doc(db,"members",selectedMemberId),
             {
-
-                plan:plan,
-                status:status
-
+          plan:plan,
+          status:status,
+          amount:Number(amount)
             }
         );
 
