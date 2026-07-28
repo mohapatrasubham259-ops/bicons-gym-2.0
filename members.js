@@ -60,13 +60,9 @@ window.closeModal = function () {
 
   try {
 
-    const q = query(
-      collection(db, "members"),
-      orderBy("name")
-    );
-
-    const snapshot = await getDocs(q);
-
+    const snapshot = await getDocs(
+  collection(db, "members")
+);
     allMembers = [];
 
     snapshot.forEach((doc) => {
