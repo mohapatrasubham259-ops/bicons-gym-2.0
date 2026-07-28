@@ -202,6 +202,11 @@ async function editMember(id){
 
   loadMembers();
 
+const snapshot = await getDocs(collection(db, "members"));
+
+console.log("Project:", firebaseConfig.projectId);
+console.log("Count:", snapshot.size);
+
 
  }
  catch(error){
