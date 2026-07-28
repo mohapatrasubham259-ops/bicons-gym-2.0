@@ -202,11 +202,22 @@ async function editMember(id){
 
   loadMembers();
 
-const snapshot = await getDocs(collection(db, "members"));
+async function loadMembers() {
+    try {
+        console.log("Loading members...");
 
-console.log("Project:", firebaseConfig.projectId);
-console.log("Count:", snapshot.size);
+        const snapshot = await getDocs(collection(db, "members"));
 
+        console.log("Members Count:", snapshot.size);
+
+        snapshot.forEach((doc) => {
+            console.log(doc.id, doc.data());
+        });
+
+    } catch (error) {
+        console.error("Firestore Error:", error);
+    }
+}
 
  }
  catch(error){
