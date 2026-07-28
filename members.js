@@ -66,7 +66,7 @@ function displayMembers(data) {
     return;
   }
 
-  tbody.innerHTML = "";
+ tableBody.innerHTML = "";
 
   data.forEach(member => {
 
@@ -88,7 +88,7 @@ function displayMembers(data) {
         ? "status-paid"
         : "status-pending";
 
-    tbody.innerHTML += `
+   tableBody.innerHTML += ``
       <tr>
         <td>${member.registrationNo ?? "-"}</td>
         <td>${member.name ?? "-"}</td>
