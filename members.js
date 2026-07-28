@@ -6,6 +6,7 @@ import {
     getDocs,
     doc,
     updateDoc,
+    deleteDoc,
     query,
     orderBy
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
@@ -136,11 +137,13 @@ function displayMembers(data){
 
 
         <td>
-        <button onclick="editMember('${member.id}')">
-        Edit
-        </button>
-        </td>
+    <button onclick="editMember('${member.id}')">Edit</button>
 
+    <button onclick="deleteMember('${member.id}')"
+        style="background:red;color:white;margin-left:5px;">
+        Delete
+    </button>
+</td>
         `;
 
 
@@ -225,7 +228,25 @@ window.editMember = async function(id){
 
 }
 
+window.deleteMember = async function(id){
 
+    if(!confirm("Delete this member?")) return;
+
+    try{
+
+        await deleteDoc(doc(db,"members",id));
+
+        alert("Member Deleted");
+
+        loadMembers();
+
+    }catch(error){
+
+        alert(error.message);
+
+    }
+
+}
 
 
 loadMembers();
