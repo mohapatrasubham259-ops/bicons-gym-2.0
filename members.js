@@ -27,6 +27,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+console.log("Project ID:", firebaseConfig.projectId);
+
 
 // HTML elements
 const membersTable = document.getElementById("membersTable");
