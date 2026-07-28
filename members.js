@@ -28,6 +28,20 @@ const searchInput = document.getElementById("searchInput");
 let allMembers = [];
 let selectedMemberId = "";
 
+function openModal(member) {
+
+  selectedMemberId = member.id;
+
+  document.getElementById("editPlan").value = member.plan || "";
+  document.getElementById("editStatus").value = member.status || "Active";
+
+  document.getElementById("editModal").style.display = "flex";
+}
+
+window.closeModal = function () {
+  document.getElementById("editModal").style.display = "none";
+}
+
 // Load Members
 async function loadMembers() {
  function openModal(member) {
@@ -156,9 +170,7 @@ document.addEventListener("click",(e)=>{
 });
 
 
-async function editMember(id){
 
-  const newPlan = prompt("Enter New Plan");
 
   if(!newPlan) return;
 
@@ -180,8 +192,6 @@ async function editMember(id){
   }
 
 }
-
-window.editMember = editMember;
 
 
 
