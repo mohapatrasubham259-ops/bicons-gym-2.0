@@ -26,9 +26,23 @@ const membersTable = document.getElementById("membersTable");
 const searchInput = document.getElementById("searchInput");
 
 let allMembers = [];
+let selectedMemberId = "";
 
 // Load Members
 async function loadMembers() {
+ function openModal(member) {
+
+  selectedMemberId = member.id;
+
+  document.getElementById("editPlan").value = member.plan || "";
+  document.getElementById("editStatus").value = member.status || "Active";
+
+  document.getElementById("editModal").style.display = "flex";
+}
+
+window.closeModal = function () {
+  document.getElementById("editModal").style.display = "none";
+}
 
   try {
 
@@ -98,9 +112,7 @@ function displayMembers(members) {
       <td>${member.expiryDate || ""}</td>
       <td>${member.status || ""}</td>
       <td>
-        <button onclick="editMember('${member.id}')">
-          Edit
-        </button>
+        <button onclick="openModalById('${member.id}')">Edit</button>
       </td>
     `;
 
@@ -174,5 +186,44 @@ window.editMember = editMember;
 
 
 // Start
+window.openModalById = function(id){
 
+    const member = allMembers.find(m => m.id === id);
+
+    if(member){
+        openModal(member);
+    }
+
+}
+
+document.getElementById("saveBtn").addEventListener("click", async () => {
+
+    const newPlan = document.getElementById("editPlan").value;
+
+    const newStatus = document.getElementById("editStatus").value;
+
+    try{
+
+        await updateDoc(doc(db,"members",selectedMemberId),{
+
+            plan:newPlan,
+            status:newStatus
+
+        });
+
+        alert("Member Updated");
+
+        closeModal();
+
+        loadMembers();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert("Update Failed");
+
+    }
+
+});
 loadMembers();

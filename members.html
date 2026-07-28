@@ -56,6 +56,29 @@ tr:nth-child(odd){
     color: red;
     font-weight: bold;
 }
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-box{
+    background:#fff;
+    color:#000;
+    width:320px;
+    padding:20px;
+    border-radius:10px;
+}
+
+.modal-box input,
+.modal-box select{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+}
 </style>
 
 </head>
@@ -99,5 +122,27 @@ tr:nth-child(odd){
 </table>
 
 <script type="module" src="members.js"></script>
+
+<div id="editModal" class="modal" style="display:none;">
+  <div class="modal-box">
+    <h2>Edit Member</h2>
+
+    <label>Plan</label>
+    <input type="text" id="editPlan">
+
+    <label>Status</label>
+    <select id="editStatus">
+      <option value="Active">Active</option>
+      <option value="Expired">Expired</option>
+    </select>
+
+    <br><br>
+
+    <button id="saveBtn">Save</button>
+    <button onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+
 </body>
 </html>
