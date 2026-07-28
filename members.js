@@ -28,37 +28,8 @@ const searchInput = document.getElementById("searchInput");
 let allMembers = [];
 let selectedMemberId = "";
 
-function openModal(member) {
-
-  selectedMemberId = member.id;
-
-  document.getElementById("editPlan").value = member.plan || "";
-  document.getElementById("editStatus").value = member.status || "Active";
-
-  document.getElementById("editModal").style.display = "flex";
-}
-
-window.closeModal = function () {
-  document.getElementById("editModal").style.display = "none";
-}
 
 // Load Members
-async function loadMembers() {
- function openModal(member) {
-
-  selectedMemberId = member.id;
-
-  document.getElementById("editPlan").value = member.plan || "";
-  document.getElementById("editStatus").value = member.status || "Active";
-
-  document.getElementById("editModal").style.display = "flex";
-}
-
-window.closeModal = function () {
-  document.getElementById("editModal").style.display = "none";
-}
-
-  try {
 
     const snapshot = await getDocs(
   collection(db, "members")
@@ -168,26 +139,7 @@ document.addEventListener("click",(e)=>{
 
 
 
-  if(!newPlan) return;
-
-  try{
-
-    await updateDoc(doc(db,"members",id), {
-      plan: newPlan
-    });
-
-    alert("Updated Successfully");
-
-    loadMembers();
-
-  }catch(error){
-
-    console.log(error);
-    alert("Update Failed");
-
-  }
-
-}
+ 
 
 
 
