@@ -39,29 +39,14 @@ async function loadMembers() {
 
     allMembers = [];
 
-   snapshot.forEach((item) => {
+    snapshot.forEach((item) => {
 
-  let member = {
-    id: item.id,
-    ...item.data()
-  };
+      allMembers.push({
+        id: item.id,
+        ...item.data()
+      });
 
-
-  // Expiry date check
-  let today = new Date();
-  let expiry = new Date(member.expiryDate);
-
-
-  if(member.expiryDate && expiry < today){
-
-    member.status = "Pending";
-
-  }
-
-
-  allMembers.push(member);
-
-});
+    });
 
     displayMembers(allMembers);
 
@@ -154,10 +139,6 @@ if (member.expiryDate) {
           🗑 Delete
         </button>
       </td>
-     
-        <td class="${member.status === 'Paid' ? 'status-paid' : 'status-pending'}">
-${member.status}
-</td>
     `;
 
     membersTable.appendChild(row);
