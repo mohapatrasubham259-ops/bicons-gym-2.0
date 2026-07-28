@@ -60,8 +60,7 @@ async function loadMembers() {
 // Display Members
 function displayMembers(data) {
 
-  const tbody = document.getElementById("membersTableBody");
-
+ const tableBody = document.getElementById("membersTableBody");
   if (!tbody) {
     console.error("membersTableBody not found");
     return;
