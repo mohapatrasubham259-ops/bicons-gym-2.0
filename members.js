@@ -303,3 +303,14 @@ window.closeAddModal = function(){
     document.getElementById("addModal").style.display = "none";
 
 }
+
+const addBtn = document.getElementById("addMemberBtn");
+const addModal = document.getElementById("addModal");
+
+addBtn.onclick = function(){
+    addModal.style.display = "flex";
+};
+
+window.closeAddModal = function(){
+    addModal.style.display = "none";
+};
