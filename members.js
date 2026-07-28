@@ -97,12 +97,12 @@ window.addEventListener("DOMContentLoaded", () => {
 function displayMembers(data) {
 
 
-    const tableBody = document.getElementById("membersTableBody");
+    const tableBody = document.getElementById("membersTable");
 
 
     if (!tableBody) {
 
-        console.error("membersTableBody not found");
+        console.error("membersTable not found");
 
         return;
 
