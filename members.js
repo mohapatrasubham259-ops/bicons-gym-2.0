@@ -1,17 +1,13 @@
-// members.js
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-
 import {
   getFirestore,
   collection,
   getDocs,
-  doc,
-  updateDoc,
   query,
-  orderBy
+  orderBy,
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-
 
 // Firebase Config
 const firebaseConfig = {
@@ -23,19 +19,13 @@ const firebaseConfig = {
   appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-console.log("Project ID:", firebaseConfig.projectId);
-
-
-// HTML elements
 const membersTable = document.getElementById("membersTable");
-const searchBox = document.getElementById("searchBox");
+const searchInput = document.getElementById("searchInput");
 
 let allMembers = [];
-
 
 // Load Members
 async function loadMembers() {
@@ -116,32 +106,18 @@ function displayMembers(members){
 
 
 // Search
-searchBox?.addEventListener("input",()=>{
+searchInput.addEventListener("input", () => {
 
+  const value = searchInput.value.toLowerCase();
 
-  const value = searchBox.value.toLowerCase();
-
-
-  const filtered = allMembers.filter((member)=>{
-
-
-    return (
-
-      member.name?.toLowerCase().includes(value) ||
-
-      member.phone?.includes(value)
-
-    );
-
-
-  });   
-
+  const filtered = allMembers.filter(member =>
+    (member.name || "").toLowerCase().includes(value) ||
+    (member.phone || "").includes(value)
+  );
 
   displayMembers(filtered);
 
-
 });
-
 
 
 
@@ -193,22 +169,35 @@ async function editMember(id){
 
 
   loadMembers();
-
 async function loadMembers() {
-    try {
-        console.log("Loading members...");
+  try {
+    membersTable.innerHTML =
+      `<tr><td colspan="10">Loading...</td></tr>`;
 
-        const snapshot = await getDocs(collection(db, "members"));
+    const q = query(
+      collection(db, "members"),
+      orderBy("name")
+    );
 
-        console.log("Members Count:", snapshot.size);
+    const snapshot = await getDocs(q);
 
-        snapshot.forEach((doc) => {
-            console.log(doc.id, doc.data());
-        });
+    allMembers = [];
 
-    } catch (error) {
-        console.error("Firestore Error:", error);
-    }
+    snapshot.forEach((docSnap) => {
+      allMembers.push({
+        id: docSnap.id,
+        ...docSnap.data()
+      });
+    });
+
+    displayMembers(allMembers);
+
+  } catch (error) {
+    console.error(error);
+
+    membersTable.innerHTML =
+      `<tr><td colspan="10">Error loading members</td></tr>`;
+  }
 }
 
  }
