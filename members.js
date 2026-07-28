@@ -92,26 +92,18 @@ function displayMembers(members){
     const row = document.createElement("tr");
 
 
-    row.innerHTML = `
-
-      <td>${member.name || ""}</td>
-
-      <td>${member.phone || ""}</td>
-
-      <td>${member.plan || ""}</td>
-
-      <td>${member.amount || ""}</td>
-
-      <td>${member.joinDate || ""}</td>
-
-
-      <td>
-        <button class="editBtn" data-id="${member.id}">
-        Edit
-        </button>
-      </td>
-
-    `;
+   row.innerHTML = `
+<td>${member.regNo || ""}</td>
+<td>${member.name || ""}</td>
+<td>${member.phone || ""}</td>
+<td>${member.age || ""}</td>
+<td>${member.plan || ""}</td>
+<td>₹${member.amount || ""}</td>
+<td>${member.paymentDate || ""}</td>
+<td>${member.expiryDate || ""}</td>
+<td>${member.status || ""}</td>
+<td><button onclick="editMember('${member.id}')">Edit</button></td>
+`;
 
 
     membersTable.appendChild(row);
@@ -142,7 +134,7 @@ searchBox?.addEventListener("input",()=>{
     );
 
 
-  });
+  });   
 
 
   displayMembers(filtered);
