@@ -60,13 +60,13 @@ async function loadMembers() {
 // Display Members
 function displayMembers(data) {
 
- const tableBody = document.getElementById("membersTableBody");
+ 
   if (!tbody) {
     console.error("membersTableBody not found");
     return;
   }
 
- tableBody.innerHTML = "";
+  tbody.innerHTML = "";
 
   data.forEach(member => {
 
@@ -88,7 +88,7 @@ function displayMembers(data) {
         ? "status-paid"
         : "status-pending";
 
-   tableBody.innerHTML += ``
+    tbody.innerHTML += `
       <tr>
         <td>${member.registrationNo ?? "-"}</td>
         <td>${member.name ?? "-"}</td>
