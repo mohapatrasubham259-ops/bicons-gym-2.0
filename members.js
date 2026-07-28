@@ -83,6 +83,8 @@ async function loadMembers() {
 
 
 // Page Load
+
+console.log("Members JS Started");
 window.addEventListener("DOMContentLoaded", () => {
 
     loadMembers();
