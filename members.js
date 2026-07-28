@@ -1,381 +1,468 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+// members.js
+
+import { 
+initializeApp 
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
+
 import {
-  getFirestore,
-  collection,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-  addDoc
+getFirestore,
+collection,
+getDocs,
+addDoc,
+doc,
+updateDoc,
+deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+
 
 // Firebase Config
 const firebaseConfig = {
-  apiKey: "AIzaSyDJ3gjoxKgNTOpLZS-Qg0mrPmp3TVJV7HM",
-  authDomain: "bicon-gym.firebaseapp.com",
-  projectId: "bicon-gym",
-  storageBucket: "bicon-gym.firebasestorage.app",
-  messagingSenderId: "64202444264",
-  appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d"
+
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_PROJECT.firebaseapp.com",
+projectId: "YOUR_PROJECT_ID",
+storageBucket: "YOUR_PROJECT.appspot.com",
+messagingSenderId: "YOUR_SENDER_ID",
+appId: "YOUR_APP_ID"
+
 };
+
+
 
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 
-const membersTable = document.getElementById("membersTable");
-const searchInput = document.getElementById("searchInput");
+
 
 let allMembers = [];
-let selectedMemberId = "";
 
-// =====================
-// Load Members
-// =====================
-async function loadMembers() {
-
-  try {
-
-    const snapshot = await getDocs(collection(db, "members"));
-
-    allMembers = [];
-
-    snapshot.forEach((item) => {
-
-      allMembers.push({
-        id: item.id,
-        ...item.data()
-      });
-
-    });
-
-    displayMembers(allMembers);
-
-  } catch (error) {
-
-    console.error(error);
-
-    membersTable.innerHTML = `
-      <tr>
-        <td colspan="10">Data Load Failed</td>
-      </tr>
-    `;
-  }
-
-}
-
-// =====================
-// Display Members
-// =====================
-function displayMembers(data) {
-
-  membersTable.innerHTML = "";
-
-  if (data.length === 0) {
-
-    membersTable.innerHTML = `
-      <tr>
-        <td colspan="10">No Members Found</td>
-      </tr>
-    `;
-
-    return;
-  }
-
-  data.forEach((member) => {
-
-let status = "Paid";
-
-if (member.expiryDate) {
-
-    const today = new Date();
-
-    const expiry = new Date(member.expiryDate);
-
-    if (expiry < today) {
-        status = "Pending";
-    }
-
-}
-
-    const statusColor =
-     status === "Paid"
-        ? "#00c853"
-        : member.status === "Pending"
-        ? "#8B0000"
-        : "#ffffff";
-
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>${member.regNo || ""}</td>
-      <td>${member.name || ""}</td>
-      <td>${member.phone || ""}</td>
-      <td>${member.age || ""}</td>
-      <td>${member.plan || ""}</td>
-      <td>₹${member.amount || ""}</td>
-      <td>${member.paymentDate || ""}</td>
-      <td>${member.expiryDate || ""}</td>
-
-      <td style="color:${statusColor};font-weight:bold;">
-        ${member.status || ""}
-      </td>
-
-      <td>
-        <button onclick="openEdit('${member.id}')">
-          ✏️ Edit
-        </button>
-
-        <button
-          onclick="deleteMember('${member.id}')"
-          style="
-            background:#d32f2f;
-            color:white;
-            margin-left:5px;
-            border:none;
-            padding:6px 10px;
-            border-radius:6px;
-            cursor:pointer;
-          ">
-          🗑 Delete
-        </button>
-      </td>
-    `;
-
-    membersTable.appendChild(row);
-
-  });
-
-}
-// =====================
-// Open Edit Popup
-// =====================
-window.openEdit = function (id) {
-
-    const member = allMembers.find(m => m.id === id);
-
-    if (!member) return;
-
-    selectedMemberId = id;
-
-    document.getElementById("editPlan").value =
-        member.plan || "";
-
-    document.getElementById("editStatus").value =
-        member.status || "Paid";
-
-    document.getElementById("editAmount").value =
-        member.amount || "";
-
-    document.getElementById("editModal").style.display = "flex";
-
-};
-
-<select id="editStatus">
-
-<option value="Paid">Paid</option>
-
-<option value="Pending">Pending</option>
-
-</select>
-
-// =====================
-// Close Popup
-// =====================
-window.closeModal = function () {
-
-    document.getElementById("editModal").style.display = "none";
-
-};
+let editId = null;
 
 
-// =====================
-// Save Member
-// =====================
-document.getElementById("saveBtn").addEventListener("click", async () => {
 
-    const plan = document.getElementById("editPlan").value;
+// LOAD MEMBERS
 
-    const status = document.getElementById("editStatus").value;
+async function loadMembers(){
 
-    const amount = Number(document.getElementById("editAmount").value);
+try{
 
-    try {
+const snap = await getDocs(collection(db,"members"));
 
-       await updateDoc(doc(db,"members",editId),{
+allMembers=[];
 
-    plan: document.getElementById("editPlan").value,
 
-    amount: document.getElementById("editAmount").value,
+snap.forEach((doc)=>{
 
-    status: document.getElementById("editStatus").value
+allMembers.push({
+
+id:doc.id,
+...doc.data()
 
 });
 
-        alert("Member Updated Successfully");
-
-        closeModal();
-
-        loadMembers();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert("Update Failed");
-
-    }
 
 });
 
 
-// =====================
-// Delete Member
-// =====================
-window.deleteMember = async function (id) {
+autoStatusUpdate();
 
-    const ok = confirm("Are you sure you want to delete this member?");
-
-    if (!ok) return;
-
-    try {
-
-        await deleteDoc(doc(db, "members", id));
-
-        alert("Member Deleted Successfully");
-
-        loadMembers();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert("Delete Failed");
-
-    }
-
-};
+displayMembers(allMembers);
 
 
-// =====================
-// Search
-// =====================
-searchInput.addEventListener("input", () => {
+}
 
-    const value = searchInput.value.toLowerCase();
+catch(error){
 
-    const result = allMembers.filter(member =>
+console.log(error);
 
-        (member.name || "").toLowerCase().includes(value) ||
+}
 
-        (member.phone || "").includes(value)
 
-    );
+}
 
-    displayMembers(result);
+
+
+
+
+// DISPLAY TABLE
+
+function displayMembers(data){
+
+
+const table=document.getElementById("memberTable");
+
+
+table.innerHTML="";
+
+
+data.forEach((m,index)=>{
+
+
+let status=m.status || "Pending";
+
+
+let colorClass = status=="Paid" ? "paid":"pending";
+
+
+
+table.innerHTML += `
+
+
+<tr>
+
+<td>${m.regNo || index+1}</td>
+
+<td>${m.name || ""}</td>
+
+<td>${m.phone || ""}</td>
+
+<td>${m.age || ""}</td>
+
+<td>${m.plan || ""}</td>
+
+<td>₹${m.amount || ""}</td>
+
+<td>${m.paymentDate || ""}</td>
+
+<td>${m.expiryDate || ""}</td>
+
+
+<td class="${colorClass}">
+${status}
+</td>
+
+
+<td>
+
+<button onclick="editMember('${m.id}')">
+Edit
+</button>
+
+
+<button 
+style="background:red"
+onclick="deleteMember('${m.id}')">
+Delete
+</button>
+
+
+</td>
+
+
+</tr>
+
+
+`;
+
 
 });
 
 
-// =====================
-// Start
-// =====================
+}
 
-window.deleteMember = async function(id){
 
-    if(!confirm("Delete this member?")) return;
 
-    try{
 
-        await deleteDoc(doc(db,"members",id));
 
-        alert("Member Deleted");
+// ADD / UPDATE MEMBER
 
-        loadMembers();
 
-    }catch(error){
+window.saveMember = async function(){
 
-        console.log(error);
 
-        alert("Delete Failed");
+let data={
 
-    }
+
+name:document.getElementById("name").value,
+
+phone:document.getElementById("phone").value,
+
+age:document.getElementById("age").value,
+
+plan:document.getElementById("plan").value,
+
+amount:document.getElementById("amount").value,
+
+paymentDate:document.getElementById("paymentDate").value,
+
+expiryDate:document.getElementById("expiryDate").value,
+
+
+status:"Paid"
+
+
+
+};
+
+
+
+
+if(editId){
+
+
+await updateDoc(
+doc(db,"members",editId),
+data
+);
+
+
+editId=null;
+
 
 }
 
-document.getElementById("addMemberBtn").onclick = function () {
-    document.getElementById("addModal").style.display = "flex";
-};
+else{
 
-window.closeAddModal = function () {
-    document.getElementById("addModal").style.display = "none";
-};
+
+await addDoc(
+collection(db,"members"),
+data
+);
+
+
+}
+
+
+
+closePopup();
+
 
 loadMembers();
 
-// ADD MEMBER SAVE
-
-document.getElementById("addSaveBtn").onclick = async function(){
-
-    const name = document.getElementById("newName").value;
-    const phone = document.getElementById("newPhone").value;
-    const age = document.getElementById("newAge").value;
-    const plan = document.getElementById("newPlan").value;
-    const amount = document.getElementById("newAmount").value;
-    const paymentDate = document.getElementById("newPaymentDate").value;
-    const expiryDate = document.getElementById("newExpiryDate").value;
-    const status = document.getElementById("newStatus").value;
-
-
-    if(!name || !phone){
-        alert("Name and Phone required");
-        return;
-    }
-
-
-    await addDoc(collection(db,"members"),{
-
-        name:name,
-        phone:phone,
-        age:age,
-        plan:plan,
-        amount:amount,
-        paymentDate:paymentDate,
-        expiryDate:expiryDate,
-        status:status,
-        createdAt:new Date()
-
-    });
-
-
-    alert("Member Added Successfully");
-
-
-    closeAddModal();
-
-
-    loadMembers();
-
-};
-
-document.getElementById("addMemberBtn").onclick = function(){
-
-    document.getElementById("addModal").style.display = "flex";
-
-};
-
-window.closeAddModal = function(){
-
-    document.getElementById("addModal").style.display = "none";
 
 }
 
-const addBtn = document.getElementById("addMemberBtn");
-const addModal = document.getElementById("addModal");
 
-addBtn.onclick = function(){
-    addModal.style.display = "flex";
-};
 
-window.closeAddModal = function(){
-    addModal.style.display = "none";
-};
+
+
+// OPEN ADD POPUP
+
+window.openAdd=function(){
+
+
+editId=null;
+
+
+document.getElementById("formTitle").innerHTML="Add Member";
+
+
+clearForm();
+
+
+document.getElementById("popup").style.display="flex";
+
+
+}
+
+
+
+
+
+window.closePopup=function(){
+
+
+document.getElementById("popup").style.display="none";
+
+
+}
+
+
+
+
+
+function clearForm(){
+
+
+document.getElementById("name").value="";
+
+document.getElementById("phone").value="";
+
+document.getElementById("age").value="";
+
+document.getElementById("amount").value="";
+
+document.getElementById("paymentDate").value="";
+
+document.getElementById("expiryDate").value="";
+
+
+}
+
+
+
+
+
+// EDIT MEMBER
+
+
+window.editMember=function(id){
+
+
+let m=allMembers.find(x=>x.id==id);
+
+
+if(!m)return;
+
+
+
+editId=id;
+
+
+document.getElementById("formTitle").innerHTML="Edit Member";
+
+
+document.getElementById("name").value=m.name || "";
+
+document.getElementById("phone").value=m.phone || "";
+
+document.getElementById("age").value=m.age || "";
+
+document.getElementById("plan").value=m.plan || "1 Month";
+
+document.getElementById("amount").value=m.amount || "";
+
+document.getElementById("paymentDate").value=m.paymentDate || "";
+
+document.getElementById("expiryDate").value=m.expiryDate || "";
+
+
+document.getElementById("popup").style.display="flex";
+
+
+}
+
+
+
+
+
+// DELETE MEMBER
+
+
+window.deleteMember=async function(id){
+
+
+if(confirm("Delete this member?")){
+
+
+await deleteDoc(
+doc(db,"members",id)
+);
+
+
+loadMembers();
+
+
+}
+
+
+}
+
+
+
+
+
+// SEARCH
+
+
+window.searchMember=function(){
+
+
+let text=document
+.getElementById("searchBox")
+.value
+.toLowerCase();
+
+
+
+let result=allMembers.filter(m=>
+
+
+(m.name||"")
+.toLowerCase()
+.includes(text)
+
+
+||
+
+(m.phone||"")
+.includes(text)
+
+
+
+);
+
+
+
+displayMembers(result);
+
+
+
+}
+
+
+
+
+
+// AUTO EXPIRY STATUS
+
+
+async function autoStatusUpdate(){
+
+
+let today=new Date();
+
+
+for(let m of allMembers){
+
+
+if(!m.expiryDate) continue;
+
+
+
+let expiry=new Date(m.expiryDate);
+
+
+
+let newStatus =
+expiry >= today
+?
+"Paid"
+:
+"Pending";
+
+
+
+if(m.status !== newStatus){
+
+
+await updateDoc(
+
+doc(db,"members",m.id),
+
+{
+
+status:newStatus
+
+}
+
+);
+
+
+}
+
+
+}
+
+
+
+}
+
+
+
+
+
+loadMembers();

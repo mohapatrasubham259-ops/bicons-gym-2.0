@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -23,147 +22,106 @@ header{
 }
 
 h1{
-    color:#ff3c00;
+    margin:0;
 }
+
+
+.container{
+    padding:20px;
+}
+
 
 button{
-    cursor:pointer;
-    padding:10px 15px;
-    border:none;
-    border-radius:6px;
-}
-
-#addMemberBtn{
-    background:#ff3c00;
+    background:#00c853;
     color:white;
-    font-size:16px;
-}
-
-
-#searchInput{
-    width:95%;
-    max-width:500px;
-    padding:12px;
-    margin-top:15px;
-    border-radius:8px;
     border:none;
-    font-size:16px;
+    padding:10px 15px;
+    border-radius:5px;
+    cursor:pointer;
 }
 
 
-.table-container{
+.search{
+    margin:15px 0;
+}
+
+input,select{
+    padding:10px;
     width:100%;
-    overflow-x:auto;
+    margin:5px 0;
+    border-radius:5px;
+    border:none;
 }
 
 
 table{
-    width:95%;
-    margin:20px auto;
+    width:100%;
     border-collapse:collapse;
+    background:#222;
 }
 
 
 th,td{
-    border:1px solid #444;
     padding:10px;
+    border:1px solid #444;
     text-align:center;
 }
 
 
 th{
-    background:#ff3c00;
+    background:#000;
 }
 
 
-tr:nth-child(even){
-    background:#222;
+.paid{
+    color:#00ff66;
+    font-weight:bold;
 }
 
 
-tr:nth-child(odd){
-    background:#1a1a1a;
+.pending{
+    color:#ff3333;
+    font-weight:bold;
 }
 
 
 
-.modal{
-
+.popup{
     display:none;
     position:fixed;
-
     top:0;
     left:0;
-
     width:100%;
     height:100%;
-
-    background:rgba(0,0,0,0.7);
-
+    background:#000b;
     justify-content:center;
     align-items:center;
-
-    z-index:999;
-
 }
 
 
-
-.modal-box{
-
-    background:white;
-    color:black;
-
-    width:90%;
-    max-width:350px;
-
+.box{
+    background:#222;
     padding:20px;
-
+    width:350px;
     border-radius:10px;
-
 }
 
 
-
-.modal-box input,
-.modal-box select,
-.modal-box button{
-
-    width:100%;
-
-    padding:12px;
-
-    margin-top:10px;
-
-    box-sizing:border-box;
-
+.close{
+    background:red;
 }
 
 
+@media(max-width:700px){
 
-.status-paid{
-
-    color:#00c853;
-    font-weight:bold;
-
+table{
+    font-size:12px;
 }
 
-
-.status-pending{
-
-    color:red;
-    font-weight:bold;
-
+.container{
+    overflow-x:auto;
 }
 
-.status-paid{
-    color:#00c853;
-    font-weight:bold;
-}
-
-.status-pending{
-    color:red;
-    font-weight:bold;
 }
 
 </style>
@@ -175,31 +133,26 @@ tr:nth-child(odd){
 
 
 <header>
-
 <h1>Bicon Gym Members</h1>
-
-
-<button id="addMemberBtn">
-➕ Add Member
-</button>
-
-
-<input 
-type="text"
-id="searchInput"
-placeholder="Search by Name or Phone">
-
-
 </header>
 
 
+<div class="container">
 
 
-<div class="table-container">
+<button onclick="openAdd()">+ Add Member</button>
+
+
+<div class="search">
+<input 
+id="searchBox"
+placeholder="Search Name or Phone"
+onkeyup="searchMember()">
+</div>
+
 
 
 <table>
-
 
 <thead>
 
@@ -218,12 +171,10 @@ placeholder="Search by Name or Phone">
 
 </tr>
 
-
 </thead>
 
 
-<tbody id="membersTable">
-
+<tbody id="memberTable">
 
 </tbody>
 
@@ -236,187 +187,68 @@ placeholder="Search by Name or Phone">
 
 
 
+<!-- ADD / EDIT POPUP -->
 
-<!-- EDIT POPUP -->
-
-
-<div id="editModal" class="modal">
+<div class="popup" id="popup">
 
 
-<div class="modal-box">
+<div class="box">
 
 
-<h2>Edit Member</h2>
+<h2 id="formTitle">
+Add Member
+</h2>
 
 
-<select id="editPlan">
+<input id="name" placeholder="Name">
 
-<option>Monthly</option>
-<option>3 Months</option>
-<option>6 Months</option>
-<option>12 Months</option>
+<input id="phone" placeholder="Phone">
 
-</select>
+<input id="age" placeholder="Age">
 
 
-<input 
-type="number"
-id="editAmount"
-placeholder="Amount">
+<select id="plan">
 
-
-<select id="editStatus">
-
-<option value="Paid">
-Paid
+<option value="1 Month">
+1 Month
 </option>
 
-
-<option value="Pending">
-Pending
+<option value="3 Month">
+3 Month
 </option>
 
+<option value="6 Month">
+6 Month
+</option>
 
 </select>
 
 
 
-<button id="saveBtn">
+<input id="amount" placeholder="Amount">
+
+
+<label>Payment Date</label>
+<input type="date" id="paymentDate">
+
+
+<label>Expiry Date</label>
+<input type="date" id="expiryDate">
+
+
+
+<button onclick="saveMember()">
 Save
 </button>
 
 
-<button onclick="closeModal()">
-Cancel
+<button class="close" onclick="closePopup()">
+Close
 </button>
-
 
 
 </div>
 
-</div>
-
-
-
-
-
-
-
-<!-- ADD MEMBER POPUP -->
-
-
-<div id="addModal" class="modal">
-
-
-<div class="modal-box">
-
-
-<h2>Add Member</h2>
-
-
-
-<input 
-id="newName"
-placeholder="Full Name">
-
-
-
-<input 
-id="newPhone"
-placeholder="Phone Number">
-
-
-
-<input 
-id="newAge"
-type="number"
-placeholder="Age">
-
-
-
-<select id="newPlan">
-
-
-<option value="">
-Select Plan
-</option>
-
-
-<option value="Monthly">
-Monthly
-</option>
-
-
-<option value="3 Months">
-3 Months
-</option>
-
-
-<option value="6 Months">
-6 Months
-</option>
-
-
-<option value="Joining">
-Joining + Monthly
-</option>
-
-
-</select>
-
-
-
-
-<input 
-id="newAmount"
-type="number"
-placeholder="Amount">
-
-
-
-<input 
-id="newPaymentDate"
-type="date">
-
-
-
-<input 
-id="newExpiryDate"
-type="date">
-
-
-
-<select id="newStatus">
-
-
-<option value="Paid">
-Paid
-</option>
-
-
-<option value="Pending">
-Pending
-</option>
-
-
-</select>
-
-
-
-
-
-<button id="addSaveBtn">
-Save
-</button>
-
-
-<button onclick="closeAddModal()">
-Cancel
-</button>
-
-
-
-</div>
 
 </div>
 
