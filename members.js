@@ -1,197 +1,419 @@
-// members.js
+// ===============================
+// BICON GYM - MEMBERS JS
+// PART 1: FIREBASE SETUP
+// ===============================
 
-import { 
-initializeApp 
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
 import {
-getFirestore,
-collection,
-getDocs,
-addDoc,
-doc,
-updateDoc,
-deleteDoc
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    doc
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-
 
 
 // Firebase Config
 const firebaseConfig = {
-
-apiKey: "YOUR_API_KEY",
-authDomain: "YOUR_PROJECT.firebaseapp.com",
-projectId: "YOUR_PROJECT_ID",
-storageBucket: "YOUR_PROJECT.appspot.com",
-messagingSenderId: "YOUR_SENDER_ID",
-appId: "YOUR_APP_ID"
-
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
 
 
-
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
 
-
+// Global Variables
 let allMembers = [];
 
 let editId = null;
 
 
+// Collection Name
+const membersCollection = collection(db, "members");
 
-// LOAD MEMBERS
+console.log("Firebase Connected");
 
-async function loadMembers(){
+// ===============================
+// PART 2: LOAD MEMBERS
+// ===============================
 
-try{
+async function loadMembers() {
 
-const snap = await getDocs(collection(db,"members"));
+    try {
 
-allMembers=[];
+        const snapshot = await getDocs(membersCollection);
+
+        allMembers = [];
+
+        snapshot.forEach((item) => {
+
+            allMembers.push({
+                id: item.id,
+                ...item.data()
+            });
+
+        });
 
 
-snap.forEach((doc)=>{
+        console.log("Members Loaded:", allMembers);
 
-allMembers.push({
 
-id:doc.id,
-...doc.data()
+        displayMembers(allMembers);
+
+
+    } catch (error) {
+
+        console.error("Load Members Error:", error);
+
+    }
+
+}
+
+
+
+// Page Load
+window.addEventListener("DOMContentLoaded", () => {
+
+    loadMembers();
 
 });
 
+// ===============================
+// PART 3: DISPLAY MEMBERS + SEARCH
+// ===============================
 
-});
+
+function displayMembers(data) {
 
 
-autoStatusUpdate();
+    const tableBody = document.getElementById("membersTableBody");
 
-displayMembers(allMembers);
+
+    if (!tableBody) {
+
+        console.error("membersTableBody not found");
+
+        return;
+
+    }
+
+
+    tableBody.innerHTML = "";
+
+
+    data.forEach((member) => {
+
+
+        let status = member.status || "Pending";
+
+
+        // Auto Status Check
+        if(member.expiryDate){
+
+            let today = new Date();
+            let expiry = new Date(member.expiryDate);
+
+
+            if(expiry < today){
+
+                status = "Pending";
+
+            }
+
+        }
+
+
+
+        let statusClass = 
+        status.toLowerCase() === "paid"
+        ? "paid"
+        : "pending";
+
+
+
+        tableBody.innerHTML += `
+
+        <tr>
+
+            <td>${member.registrationNo || member.regNo || "-"}</td>
+
+            <td>${member.name || "-"}</td>
+
+            <td>${member.phone || "-"}</td>
+
+            <td>${member.age || "-"}</td>
+
+            <td>${member.plan || "-"}</td>
+
+            <td>₹${member.amount || 0}</td>
+
+            <td>${member.paymentDate || "-"}</td>
+
+            <td>${member.expiryDate || "-"}</td>
+
+
+            <td>
+                <span class="${statusClass}">
+                    ${status}
+                </span>
+            </td>
+
+
+            <td>
+
+                <button onclick="editMember('${member.id}')">
+                    Edit
+                </button>
+
+
+                <button onclick="deleteMember('${member.id}')">
+                    Delete
+                </button>
+
+            </td>
+
+
+        </tr>
+
+        `;
+
+
+    });
 
 
 }
 
-catch(error){
-
-console.log(error);
-
-}
 
 
-}
+// Search Function
+
+const searchBox = document.getElementById("searchInput");
 
 
+if(searchBox){
+
+    searchBox.addEventListener("input",()=>{
 
 
-
-// DISPLAY TABLE
-
-function displayMembers(data){
+        let value = searchBox.value.toLowerCase();
 
 
-const table=document.getElementById("memberTable");
+        let filtered = allMembers.filter((member)=>{
 
 
-table.innerHTML="";
+            return (
+
+                member.name?.toLowerCase().includes(value)
+
+                ||
+
+                member.phone?.includes(value)
+
+            );
 
 
-data.forEach((m,index)=>{
+        });
 
 
-let status=m.status || "Pending";
+        displayMembers(filtered);
 
 
-let colorClass = status=="Paid" ? "paid":"pending";
-
-
-
-table.innerHTML += `
-
-
-<tr>
-
-<td>${m.regNo || index+1}</td>
-
-<td>${m.name || ""}</td>
-
-<td>${m.phone || ""}</td>
-
-<td>${m.age || ""}</td>
-
-<td>${m.plan || ""}</td>
-
-<td>₹${m.amount || ""}</td>
-
-<td>${m.paymentDate || ""}</td>
-
-<td>${m.expiryDate || ""}</td>
-
-
-<td class="${colorClass}">
-${status}
-</td>
-
-
-<td>
-
-<button onclick="editMember('${m.id}')">
-Edit
-</button>
-
-
-<button 
-style="background:red"
-onclick="deleteMember('${m.id}')">
-Delete
-</button>
-
-
-</td>
-
-
-</tr>
-
-
-`;
-
-
-});
-
+    });
 
 }
 
-
-
-
-
-// ADD / UPDATE MEMBER
+// ===============================
+// PART 4: ADD MEMBER
+// ===============================
 
 
 window.saveMember = async function(){
 
 
-let data={
+    try{
 
 
-name:document.getElementById("name").value,
-
-phone:document.getElementById("phone").value,
-
-age:document.getElementById("age").value,
-
-plan:document.getElementById("plan").value,
-
-amount:document.getElementById("amount").value,
-
-paymentDate:document.getElementById("paymentDate").value,
-
-expiryDate:document.getElementById("expiryDate").value,
+        const memberData = {
 
 
-status:"Paid"
+            registrationNo:
+            document.getElementById("registrationNo")?.value || "",
+
+
+            name:
+            document.getElementById("name")?.value || "",
+
+
+            phone:
+            document.getElementById("phone")?.value || "",
+
+
+            age:
+            document.getElementById("age")?.value || "",
+
+
+            plan:
+            document.getElementById("plan")?.value || "",
+
+
+            amount:
+            document.getElementById("amount")?.value || "",
+
+
+            paymentDate:
+            document.getElementById("paymentDate")?.value || "",
+
+
+            expiryDate:
+            document.getElementById("expiryDate")?.value || "",
+
+
+            status:
+            document.getElementById("status")?.value || "Pending",
+
+
+            createdAt:
+            new Date()
+
+        };
+
+
+
+        await addDoc(
+            membersCollection,
+            memberData
+        );
+
+
+
+        alert("Member Added Successfully ✅");
+
+
+
+        loadMembers();
+
+
+
+        // Close Popup (if exists)
+
+        if(document.getElementById("addMemberPopup")){
+
+            document.getElementById("addMemberPopup").style.display="none";
+
+        }
+
+
+
+    }catch(error){
+
+
+        console.error(
+            "Add Member Error:",
+            error
+        );
+
+
+        alert("Member Add Failed");
+
+
+    }
+
+
+};
+
+// ===============================
+// PART 5: EDIT MEMBER
+// ===============================
+
+
+window.editMember = function(id){
+
+
+    const member = allMembers.find(
+        item => item.id === id
+    );
+
+
+    if(!member){
+
+        alert("Member not found");
+
+        return;
+
+    }
+
+
+
+    editId = id;
+
+
+
+    // Fill Form Data
+
+    if(document.getElementById("registrationNo"))
+    document.getElementById("registrationNo").value =
+    member.registrationNo || member.regNo || "";
+
+
+    if(document.getElementById("name"))
+    document.getElementById("name").value =
+    member.name || "";
+
+
+    if(document.getElementById("phone"))
+    document.getElementById("phone").value =
+    member.phone || "";
+
+
+    if(document.getElementById("age"))
+    document.getElementById("age").value =
+    member.age || "";
+
+
+    if(document.getElementById("plan"))
+    document.getElementById("plan").value =
+    member.plan || "";
+
+
+    if(document.getElementById("amount"))
+    document.getElementById("amount").value =
+    member.amount || "";
+
+
+    if(document.getElementById("paymentDate"))
+    document.getElementById("paymentDate").value =
+    member.paymentDate || "";
+
+
+    if(document.getElementById("expiryDate"))
+    document.getElementById("expiryDate").value =
+    member.expiryDate || "";
+
+
+    if(document.getElementById("status"))
+    document.getElementById("status").value =
+    member.status || "Pending";
+
+
+
+    // Open Popup
+
+    if(document.getElementById("addMemberPopup")){
+
+        document.getElementById("addMemberPopup").style.display="block";
+
+    }
 
 
 
@@ -200,269 +422,257 @@ status:"Paid"
 
 
 
-if(editId){
 
+// Update Existing Member
 
-await updateDoc(
-doc(db,"members",editId),
-data
-);
+window.updateMember = async function(){
 
 
-editId=null;
+    if(!editId){
 
+        alert("Select member first");
 
-}
+        return;
 
-else{
+    }
 
 
-await addDoc(
-collection(db,"members"),
-data
-);
 
+    try{
 
-}
 
+        const updateData = {
 
 
-closePopup();
+            registrationNo:
+            document.getElementById("registrationNo").value,
 
 
-loadMembers();
+            name:
+            document.getElementById("name").value,
 
 
-}
+            phone:
+            document.getElementById("phone").value,
 
 
+            age:
+            document.getElementById("age").value,
 
 
+            plan:
+            document.getElementById("plan").value,
 
-// OPEN ADD POPUP
 
-window.openAdd=function(){
+            amount:
+            document.getElementById("amount").value,
 
 
-editId=null;
+            paymentDate:
+            document.getElementById("paymentDate").value,
 
 
-document.getElementById("formTitle").innerHTML="Add Member";
+            expiryDate:
+            document.getElementById("expiryDate").value,
 
 
-clearForm();
+            status:
+            document.getElementById("status").value
 
+        };
 
-document.getElementById("popup").style.display="flex";
 
 
-}
+        await updateDoc(
 
+            doc(db,"members",editId),
 
+            updateData
 
+        );
 
 
-window.closePopup=function(){
 
+        alert("Member Updated ✅");
 
-document.getElementById("popup").style.display="none";
 
 
-}
+        editId = null;
 
 
+        loadMembers();
 
 
 
-function clearForm(){
+    }
+    catch(error){
 
 
-document.getElementById("name").value="";
+        console.error(
+            "Update Error:",
+            error
+        );
 
-document.getElementById("phone").value="";
 
-document.getElementById("age").value="";
+        alert("Update Failed");
 
-document.getElementById("amount").value="";
 
-document.getElementById("paymentDate").value="";
+    }
 
-document.getElementById("expiryDate").value="";
 
+};
 
-}
+// ===============================
+// PART 6: DELETE MEMBER
+// ===============================
 
 
+window.deleteMember = async function(id){
 
 
+    let confirmDelete = confirm(
+        "Are you sure you want to delete this member?"
+    );
 
-// EDIT MEMBER
 
+    if(!confirmDelete){
 
-window.editMember=function(id){
+        return;
 
+    }
 
-let m=allMembers.find(x=>x.id==id);
 
 
-if(!m)return;
+    try{
 
 
+        await deleteDoc(
+            doc(db,"members",id)
+        );
 
-editId=id;
 
 
-document.getElementById("formTitle").innerHTML="Edit Member";
+        alert("Member Deleted ✅");
 
 
-document.getElementById("name").value=m.name || "";
 
-document.getElementById("phone").value=m.phone || "";
+        loadMembers();
 
-document.getElementById("age").value=m.age || "";
 
-document.getElementById("plan").value=m.plan || "1 Month";
 
-document.getElementById("amount").value=m.amount || "";
+    }
+    catch(error){
 
-document.getElementById("paymentDate").value=m.paymentDate || "";
 
-document.getElementById("expiryDate").value=m.expiryDate || "";
+        console.error(
+            "Delete Error:",
+            error
+        );
 
 
-document.getElementById("popup").style.display="flex";
+        alert("Delete Failed");
 
 
-}
+    }
 
 
+};
 
+// ===============================
+// PART 7: AUTO STATUS CHECK
+// ===============================
 
 
-// DELETE MEMBER
+function checkAutoStatus(){
 
 
-window.deleteMember=async function(id){
+    let today = new Date();
 
 
-if(confirm("Delete this member?")){
 
+    allMembers.forEach(async (member)=>{
 
-await deleteDoc(
-doc(db,"members",id)
-);
 
+        if(member.expiryDate && member.status === "Paid"){
 
-loadMembers();
 
+            let expiry = new Date(member.expiryDate);
 
-}
 
 
-}
+            if(expiry < today){
 
 
+                await updateDoc(
 
+                    doc(db,"members",member.id),
 
+                    {
+                        status:"Pending"
+                    }
 
-// SEARCH
+                );
 
 
-window.searchMember=function(){
+            }
 
 
-let text=document
-.getElementById("searchBox")
-.value
-.toLowerCase();
+        }
 
 
-
-let result=allMembers.filter(m=>
-
-
-(m.name||"")
-.toLowerCase()
-.includes(text)
-
-
-||
-
-(m.phone||"")
-.includes(text)
-
-
-
-);
-
-
-
-displayMembers(result);
-
-
-
-}
-
-
-
-
-
-// AUTO EXPIRY STATUS
-
-
-async function autoStatusUpdate(){
-
-
-let today=new Date();
-
-
-for(let m of allMembers){
-
-
-if(!m.expiryDate) continue;
-
-
-
-let expiry=new Date(m.expiryDate);
-
-
-
-let newStatus =
-expiry >= today
-?
-"Paid"
-:
-"Pending";
-
-
-
-if(m.status !== newStatus){
-
-
-await updateDoc(
-
-doc(db,"members",m.id),
-
-{
-
-status:newStatus
-
-}
-
-);
-
-
-}
+    });
 
 
 }
 
 
 
+// Run Status Check
+
+setTimeout(()=>{
+
+    checkAutoStatus();
+
+},2000);
+
+
+
+// ===============================
+// STATUS COLOR CSS SUPPORT
+// ===============================
+
+
+const style = document.createElement("style");
+
+style.innerHTML = `
+
+
+.paid{
+
+    background:#00c853;
+
+    color:white;
+
+    padding:5px 10px;
+
+    border-radius:15px;
+
 }
 
 
+.pending{
+
+    background:#ff5252;
+
+    color:white;
+
+    padding:5px 10px;
+
+    border-radius:15px;
+
+}
 
 
+`;
 
-loadMembers();
+document.head.appendChild(style);
