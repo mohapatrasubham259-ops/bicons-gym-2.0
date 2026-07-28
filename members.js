@@ -1,19 +1,19 @@
+// members.js
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
 import {
-    getFirestore,
-    collection,
-    getDocs,
-    doc,
-    updateDoc,
-    deleteDoc,
-    query,
-    orderBy
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 
 // Firebase Config
-
 const firebaseConfig = {
   apiKey: "AIzaSyDJ3gjoxKgNTOpLZS-Qg0mrPmp3TVJV7HM",
   authDomain: "bicon-gym.firebaseapp.com",
@@ -24,227 +24,200 @@ const firebaseConfig = {
   measurementId: "G-HY45R5RJQ4"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-const table = document.getElementById("membersTable");
-const searchInput = document.getElementById("searchInput");
+// HTML elements
+const membersTable = document.getElementById("membersTable");
+const searchBox = document.getElementById("searchBox");
+
 
 let allMembers = [];
 
 
 // Load Members
-async function loadMembers(){
+async function loadMembers() {
 
-    try{
+  try {
 
-        table.innerHTML = `
-        <tr>
-        <td colspan="10">Loading...</td>
-        </tr>
-        `;
+    const q = query(
+      collection(db, "members"),
+      orderBy("name")
+    );
 
+    const snapshot = await getDocs(q);
 
-        const snapshot = await getDocs(collection(db, "members"));
-        console.log("Documents:", snapshot.size);
+    allMembers = [];
 
-        console.log("Members Count:", snapshot.size);
-        console.log(snapshot.docs.map(doc => doc.data()));
+    snapshot.forEach((doc) => {
 
+      allMembers.push({
+        id: doc.id,
+        ...doc.data()
+      });
 
-        allMembers=[];
-
-
-        snapshot.forEach((docSnap)=>{
-
-            allMembers.push({
-                id:docSnap.id,
-                ...docSnap.data()
-            });
-
-        });
+    });
 
 
-        displayMembers(allMembers);
+    displayMembers(allMembers);
 
 
-    }catch(error){
+  } catch(error){
 
-        console.log(error);
+    console.log("Load Error:", error);
 
-        table.innerHTML=`
-        <tr>
-        <td colspan="10">
-        Error loading data
-        </td>
-        </tr>
-        `;
+    membersTable.innerHTML =
+    `<tr>
+      <td colspan="6">
+      Error loading members
+      </td>
+    </tr>`;
 
-    }
+  }
 
 }
-
 
 
 // Display Members
-function displayMembers(data){
+function displayMembers(members){
 
-    table.innerHTML="";
-
-
-    if(data.length===0){
-
-        table.innerHTML=`
-        <tr>
-        <td colspan="10">
-        No Members Found
-        </td>
-        </tr>
-        `;
-
-        return;
-    }
+  membersTable.innerHTML = "";
 
 
-    data.forEach(member=>{
+  members.forEach((member)=>{
 
 
-        let row=document.createElement("tr");
+    const row = document.createElement("tr");
 
 
-        row.innerHTML=`
+    row.innerHTML = `
 
-        <td>${member.regNo || ""}</td>
+      <td>${member.name || ""}</td>
 
-        <td>${member.name || ""}</td>
+      <td>${member.phone || ""}</td>
 
-        <td>${member.phone || ""}</td>
+      <td>${member.plan || ""}</td>
 
-        <td>${member.age || ""}</td>
+      <td>${member.amount || ""}</td>
 
-        <td>${member.plan || ""}</td>
-
-        <td>₹${member.amount || ""}</td>
-
-        <td>${member.paymentDate || ""}</td>
-
-        <td>${member.expiryDate || ""}</td>
-
-        <td class="${member.status}">
-  ${member.status || ""}
-</td>
+      <td>${member.joinDate || ""}</td>
 
 
-        <td>
-    <button onclick="editMember('${member.id}')">Edit</button>
+      <td>
+        <button class="editBtn" data-id="${member.id}">
+        Edit
+        </button>
+      </td>
 
-    <button onclick="deleteMember('${member.id}')"
-        style="background:red;color:white;margin-left:5px;">
-        Delete
-    </button>
-</td>
-        `;
+    `;
 
 
-        table.appendChild(row);
+    membersTable.appendChild(row);
 
-    });
+
+  });
 
 
 }
 
 
-
 // Search
-
-searchInput.addEventListener("input",()=>{
-
-
-    let value=searchInput.value.toLowerCase();
+searchBox?.addEventListener("input",()=>{
 
 
-    let filtered=allMembers.filter(member=>{
+  const value = searchBox.value.toLowerCase();
 
 
-        return (
-
-        String(member.name).toLowerCase().includes(value)
-
-        ||
-
-        String(member.phone).includes(value)
-
-        );
+  const filtered = allMembers.filter((member)=>{
 
 
-    });
+    return (
 
-    console.log("All Members:", allMembers);
+      member.name?.toLowerCase().includes(value) ||
 
-    displayMembers(filtered);
+      member.phone?.includes(value)
+
+    );
+
+
+  });
+
+
+  displayMembers(filtered);
 
 
 });
 
 
 
-// Edit Function
 
-window.editMember = async function(id){
+// Edit Member
 
-
-    let newStatus = prompt(
-        "Enter new status (Active/Expired)"
-    );
+document.addEventListener("click",(e)=>{
 
 
-    if(newStatus){
+ if(e.target.classList.contains("editBtn")){
 
 
-        try{
-
-            await updateDoc(
-                doc(db,"members",id),
-                {
-                    status:newStatus
-                }
-            );
+   const id = e.target.dataset.id;
 
 
-            alert("Updated Successfully");
+   editMember(id);
 
 
-            loadMembers();
+ }
 
 
-        }catch(error){
+});
 
-            alert(error.message);
 
-        }
 
+async function editMember(id){
+
+
+ const newPlan = prompt(
+ "Enter New Plan"
+ );
+
+
+ if(!newPlan) return;
+
+
+
+ try{
+
+
+  await updateDoc(
+    doc(db,"members",id),
+    {
+      plan:newPlan
     }
+  );
+
+
+  alert("Updated Successfully");
+
+
+  loadMembers();
+
+
+ }
+ catch(error){
+
+  console.log(error);
+
+  alert("Update Failed");
+
+ }
+
 
 }
 
-window.deleteMember = async function(id) {
 
-    if (!confirm("Delete this member?")) return;
 
-    await deleteDoc(doc(db, "members", id));
 
-    alert("Member deleted successfully!");
-
-    loadMembers();
-}
-    }catch(error){
-
-        alert(error.message);
-
-    }
-
-}
-
+// Start
 
 loadMembers();
