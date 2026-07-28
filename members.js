@@ -302,6 +302,14 @@ window.deleteMember = async function(id){
 
 }
 
+document.getElementById("addMemberBtn").onclick = function () {
+    document.getElementById("addModal").style.display = "flex";
+};
+
+window.closeAddModal = function () {
+    document.getElementById("addModal").style.display = "none";
+};
+
 loadMembers();
 
 // ADD MEMBER SAVE
