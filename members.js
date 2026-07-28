@@ -136,16 +136,11 @@ function displayMembers(data){
 </td>
 
 
-       <td>
+        <td>
     <button onclick="editMember('${member.id}')">Edit</button>
 
-    <button onclick="renewMember('${member.id}')"
-        style="background:#28a745;color:white;margin:5px;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">
-        Renew
-    </button>
-
     <button onclick="deleteMember('${member.id}')"
-        style="background:#dc3545;color:white;margin:5px;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">
+        style="background:red;color:white;margin-left:5px;">
         Delete
     </button>
 </td>
@@ -247,50 +242,6 @@ window.deleteMember = async function(id) {
 
         alert(error.message);
 
-    }
-
-}
-
-window.renewMember = async function(id) {
-
-    const months = parseInt(prompt("Renew for how many months? (1, 3, 6, 12)"));
-
-    if (!months || isNaN(months)) {
-        alert("Invalid plan.");
-        return;
-    }
-
-    const amount = prompt("Enter Amount");
-
-    if (!amount) return;
-
-    const today = new Date();
-
-    const expiry = new Date(today);
-    expiry.setMonth(expiry.getMonth() + months);
-
-    const paymentDate = today.toISOString().split("T")[0];
-    const expiryDate = expiry.toISOString().split("T")[0];
-
-    let plan = months + " Month";
-    if (months > 1) plan = months + " Months";
-
-    try {
-
-        await updateDoc(doc(db, "members", id), {
-            plan: plan,
-            amount: amount,
-            paymentDate: paymentDate,
-            expiryDate: expiryDate,
-            status: "Paid"
-        });
-
-        alert("Membership Renewed Successfully");
-
-        loadMembers();
-
-    } catch (error) {
-        alert(error.message);
     }
 
 }
