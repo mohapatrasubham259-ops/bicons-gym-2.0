@@ -170,6 +170,13 @@ window.openEdit = function (id) {
 
 };
 
+<select id="editStatus">
+
+<option value="Paid">Paid</option>
+
+<option value="Pending">Pending</option>
+
+</select>
 
 // =====================
 // Close Popup
@@ -194,11 +201,15 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
 
     try {
 
-        await updateDoc(doc(db, "members", selectedMemberId), {
-            plan: plan,
-            status: status,
-            amount: amount
-        });
+       await updateDoc(doc(db,"members",editId),{
+
+    plan: document.getElementById("editPlan").value,
+
+    amount: document.getElementById("editAmount").value,
+
+    status: document.getElementById("editStatus").value
+
+});
 
         alert("Member Updated Successfully");
 
