@@ -248,3 +248,143 @@ async function saveMember() {
   }
 
 }
+// ===============================
+// PART 3
+// EDIT + DELETE + STATUS
+// ===============================
+
+// Open Edit Popup
+window.editMember = function (id) {
+
+  const member = allMembers.find(m => m.id === id);
+
+  if (!member) return;
+
+  editId = id;
+
+  document.getElementById("editPlan").value =
+    member.plan || "Monthly";
+
+  document.getElementById("editAmount").value =
+    member.amount || "";
+
+  document.getElementById("editStatus").value =
+    member.status || "Pending";
+
+  document.getElementById("editModal").style.display = "flex";
+
+};
+
+// Close Edit Popup
+window.closeModal = function () {
+
+  document.getElementById("editModal").style.display = "none";
+
+};
+
+// Save Edit
+const saveBtn = document.getElementById("saveBtn");
+
+if (saveBtn) {
+
+  saveBtn.onclick = async () => {
+
+    if (!editId) return;
+
+    try {
+
+      await updateDoc(doc(db, "members", editId), {
+
+        plan: document.getElementById("editPlan").value,
+
+        amount: document.getElementById("editAmount").value,
+
+        status: document.getElementById("editStatus").value
+
+      });
+
+      alert("Member Updated Successfully ✅");
+
+      closeModal();
+
+      editId = null;
+
+      await loadMembers();
+
+    } catch (err) {
+
+      console.error(err);
+
+      alert("Update Failed");
+
+    }
+
+  };
+
+}
+
+// Delete Member
+window.deleteMember = async function (id) {
+
+  if (!confirm("Delete this member?")) return;
+
+  try {
+
+    await deleteDoc(doc(db, "members", id));
+
+    alert("Member Deleted Successfully ✅");
+
+    await loadMembers();
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Delete Failed");
+
+  }
+
+};
+
+// ===============================
+// AUTO STATUS UPDATE
+// ===============================
+
+async function checkAutoStatus() {
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  for (const member of allMembers) {
+
+    if (!member.expiryDate) continue;
+
+    const expiry = new Date(member.expiryDate);
+    expiry.setHours(0, 0, 0, 0);
+
+    const newStatus = expiry < today ? "Pending" : "Paid";
+
+    if (member.status !== newStatus) {
+
+      try {
+
+        await updateDoc(doc(db, "members", member.id), {
+          status: newStatus
+        });
+
+      } catch (err) {
+
+        console.error(err);
+
+      }
+
+    }
+
+  }
+
+  await loadMembers();
+
+}
+
+// Run every 30 seconds
+setInterval(checkAutoStatus, 30000);
