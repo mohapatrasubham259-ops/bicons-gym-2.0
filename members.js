@@ -71,47 +71,7 @@ function displayMembers(data) {
     tbody.innerHTML = "";
 
     
-  data.forEach(member => {
-
-    let status = member.status || "Pending";
-
-    if (member.expiryDate) {
-
-      const today = new Date().setHours(0,0,0,0);
-      const expiry = new Date(member.expiryDate).setHours(0,0,0,0);
-
-      if (expiry < today) {
-        status = "Pending";
-      }
-
-    }
-
-    const statusClass =
-      status === "Paid"
-        ? "status-paid"
-        : "status-pending";
-
-    tbody.innerHTML += `
-      <tr>
-        <td>${member.registrationNo ?? "-"}</td>
-        <td>${member.name ?? "-"}</td>
-        <td>${member.phone ?? "-"}</td>
-        <td>${member.age ?? "-"}</td>
-        <td>${member.plan ?? "-"}</td>
-        <td>₹${member.amount ?? "-"}</td>
-        <td>${member.paymentDate ?? "-"}</td>
-        <td>${member.expiryDate ?? "-"}</td>
-        <td class="${statusClass}">${status}</td>
-        <td>
-          <button onclick="editMember('${member.id}')">Edit</button>
-          <button onclick="deleteMember('${member.id}')">Delete</button>
-        </td>
-      </tr>
-    `;
-
-  });
-
-}
+ 
 
 // Load on Page Open
 window.addEventListener("DOMContentLoaded", loadMembers);
