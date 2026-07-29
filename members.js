@@ -341,3 +341,8 @@ async function checkAutoStatus() {
 }
 
 // Run after loading
+setTimeout(() => {
+
+    checkAutoStatus();
+
+}, 2000);
