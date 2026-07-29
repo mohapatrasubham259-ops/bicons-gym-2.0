@@ -61,7 +61,7 @@ async function loadMembers() {
 
 function displayMembers(data) {
 
-    const tbody = document.getElementById("membersTableBody");
+    const tbody = document.getElementById("membersTable");
 
     if (!tbody) {
         console.error("membersTableBody not found");
@@ -347,6 +347,32 @@ async function checkAutoStatus() {
     today.setHours(0,0,0,0);
 
     for (const member of allMembers) {
+
+        if (!member.expiryDate) continue;
+
+        const expiry = new Date(member.expiryDate);
+        expiry.setHours(0,0,0,0);
+
+        const newStatus = expiry < today ? "Pending" : "Paid";
+
+        if (member.status !== newStatus) {
+            try {
+                await updateDoc(doc(db, "members", member.id), {
+                    status: newStatus
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }
+
+    loadMembers();
+}
+
+// Run after loading
+setTimeout(() => {
+    checkAutoStatus();
+}, 2000);
 
         if (!member.expiryDate) continue;
 
