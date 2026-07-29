@@ -134,3 +134,117 @@ function displayMembers(data) {
 
 // Load Page
 window.addEventListener("DOMContentLoaded", loadMembers);
+// ===============================
+// PART 2
+// SEARCH + ADD MEMBER
+// ===============================
+
+// Search
+const searchInput = document.getElementById("searchInput");
+
+if (searchInput) {
+
+  searchInput.addEventListener("input", () => {
+
+    const value = searchInput.value.trim().toLowerCase();
+
+    const filtered = allMembers.filter(member => {
+
+      return (
+        (member.name || "").toLowerCase().includes(value) ||
+        (member.phone || "").includes(value) ||
+        (member.registrationNo || "").toLowerCase().includes(value)
+      );
+
+    });
+
+    displayMembers(filtered);
+
+  });
+
+}
+
+// Open Add Popup
+const addBtn = document.getElementById("addMemberBtn");
+const addModal = document.getElementById("addModal");
+
+if (addBtn) {
+
+  addBtn.onclick = () => {
+
+    addModal.style.display = "flex";
+
+  };
+
+}
+
+// Close Add Popup
+window.closeAddModal = function () {
+
+  document.getElementById("addModal").style.display = "none";
+
+};
+
+// Save New Member
+const addSaveBtn = document.getElementById("addSaveBtn");
+
+if (addSaveBtn) {
+
+  addSaveBtn.onclick = saveMember;
+
+}
+
+async function saveMember() {
+
+  try {
+
+    const memberData = {
+
+      registrationNo: "BG" + Date.now(),
+
+      name: document.getElementById("newName").value.trim(),
+
+      phone: document.getElementById("newPhone").value.trim(),
+
+      age: document.getElementById("newAge").value,
+
+      plan: document.getElementById("newPlan").value,
+
+      amount: document.getElementById("newAmount").value,
+
+      paymentDate: document.getElementById("newPaymentDate").value,
+
+      expiryDate: document.getElementById("newExpiryDate").value,
+
+      status: document.getElementById("newStatus").value,
+
+      createdAt: new Date()
+
+    };
+
+    await addDoc(membersRef, memberData);
+
+    alert("Member Added Successfully ✅");
+
+    closeAddModal();
+
+    document.getElementById("newName").value = "";
+    document.getElementById("newPhone").value = "";
+    document.getElementById("newAge").value = "";
+    document.getElementById("newPlan").value = "";
+    document.getElementById("newAmount").value = "";
+    document.getElementById("newPaymentDate").value = "";
+    document.getElementById("newExpiryDate").value = "";
+    document.getElementById("newStatus").value = "Paid";
+
+    await loadMembers();
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Failed to Add Member");
+
+  }
+
+}
