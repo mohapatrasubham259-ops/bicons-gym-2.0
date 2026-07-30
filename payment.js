@@ -1,10 +1,12 @@
-alert("Payment JS Loaded");
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import {
   getFirestore,
   doc,
   updateDoc
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";\
+
+alert("Payment JS Loaded");
 
 // Firebase Config
 const firebaseConfig = {
