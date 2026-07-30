@@ -207,8 +207,10 @@ document.querySelector("form").addEventListener("submit", async (e)=>{
 };
 
 const docRef = await addDoc(collection(db, "members"), memberData);
+console.log("Member Saved:", docRef.id);
 
 alert("Registration Successful!");
+console.log("Redirecting to payment...");
 
 window.location.href =
 `payment.html?id=${docRef.id}&plan=${encodeURIComponent(memberData.plan)}`;
