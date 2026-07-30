@@ -198,10 +198,9 @@ document.querySelector("form").addEventListener("submit", async (e)=>{
     plan: document.getElementById("plan").value,
     amount: document.getElementById("amount").value,
 
-    // Registration के समय payment अभी नहीं हुई है
+    status: "Pending",
     paymentDate: "",
     expiryDate: "",
-    status: "Pending",
 
     createdAt: new Date()
 
@@ -211,10 +210,8 @@ const docRef = await addDoc(collection(db, "members"), memberData);
 
 alert("Registration Successful!");
 
-// Payment Page Open
 window.location.href =
 `payment.html?id=${docRef.id}&plan=${encodeURIComponent(memberData.plan)}`;
-
     }catch(err){
 
         alert("Error : "+err.message);
