@@ -1,3 +1,4 @@
+alert("Payment JS Loaded");
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import {
   getFirestore,
