@@ -187,26 +187,33 @@ document.querySelector("form").addEventListener("submit", async (e)=>{
 
     try{
 
-        await addDoc(collection(db,"members"),{
-         
-            registrationNo: "BG" + Date.now(),
-            name:document.getElementById("name").value,
-            phone:document.getElementById("phone").value,
-            age:document.getElementById("age").value,
-            email:document.getElementById("email").value,
-            address:document.getElementById("address").value,
-            plan:document.getElementById("plan").value,
-            amount:document.getElementById("amount").value,
-            paymentDate:document.getElementById("paymentDate").value,
-            expiryDate:document.getElementById("expiryDate").value,
-            status:document.getElementById("status").value,
-            createdAt:new Date()
+        const memberData = {
 
-        });
+    registrationNo: "BG" + Date.now(),
+    name: document.getElementById("name").value,
+    phone: document.getElementById("phone").value,
+    age: document.getElementById("age").value,
+    email: document.getElementById("email").value,
+    address: document.getElementById("address").value,
+    plan: document.getElementById("plan").value,
+    amount: document.getElementById("amount").value,
 
-        alert("Registration Successful!");
+    // Registration के समय payment अभी नहीं हुई है
+    paymentDate: "",
+    expiryDate: "",
+    status: "Pending",
 
-        document.querySelector("form").reset();
+    createdAt: new Date()
+
+};
+
+const docRef = await addDoc(collection(db, "members"), memberData);
+
+alert("Registration Successful!");
+
+// Payment Page Open
+window.location.href =
+`payment.html?id=${docRef.id}&plan=${encodeURIComponent(memberData.plan)}`;
 
     }catch(err){
 
