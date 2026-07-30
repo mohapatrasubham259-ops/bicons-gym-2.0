@@ -293,15 +293,53 @@ if (saveBtn) {
 
     try {
 
-      await updateDoc(doc(db, "members", editId), {
+      const plan = document.getElementById("editPlan").value;
+      const amount = document.getElementById("editAmount").value;
+      const status = document.getElementById("editStatus").value;
 
-        plan: document.getElementById("editPlan").value,
+      let updateData = {
+        plan,
+        amount,
+        status
+      };
 
-        amount: document.getElementById("editAmount").value,
+      // Pending -> Paid
+      if (status === "Paid") {
 
-        status: document.getElementById("editStatus").value
+        const today = new Date();
 
-      });
+        const paymentDate = today.toISOString().split("T")[0];
+
+        const expiry = new Date(today);
+
+        switch (plan) {
+
+          case "Monthly":
+            expiry.setMonth(expiry.getMonth() + 1);
+            break;
+
+          case "3 Months":
+            expiry.setMonth(expiry.getMonth() + 3);
+            break;
+
+          case "6 Months":
+            expiry.setMonth(expiry.getMonth() + 6);
+            break;
+
+          case "12 Months":
+            expiry.setFullYear(expiry.getFullYear() + 1);
+            break;
+
+        }
+
+        const expiryDate = expiry.toISOString().split("T")[0];
+
+        updateData.paymentDate = paymentDate;
+        updateData.expiryDate = expiryDate;
+
+      }
+
+      await updateDoc(doc(db, "members", editId), updateData);
 
       alert("Member Updated Successfully ✅");
 
@@ -322,7 +360,6 @@ if (saveBtn) {
   };
 
 }
-
 // Delete Member
 window.deleteMember = async function (id) {
 
