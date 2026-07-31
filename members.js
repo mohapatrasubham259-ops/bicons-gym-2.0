@@ -441,3 +441,22 @@ function getStatusClass(expiryDate){
 window.addEventListener("DOMContentLoaded", () => {
     loadMembers();
 });
+// ===============================
+// CLOSE POPUP FUNCTIONS
+// ===============================
+
+window.closeModal = function(){
+
+    document.getElementById("editModal")
+    .style.display = "none";
+
+}
+
+
+
+window.closeAddModal = function(){
+
+    document.getElementById("addModal")
+    .style.display = "none";
+
+}
