@@ -149,3 +149,95 @@ function displayMembers(data){
 // Start
 
 loadMembers();
+// ===============================
+// PART 2
+// Search + Serial No.
+// ===============================
+
+
+// Search Function
+
+function searchMembers(){
+
+
+    const searchBox =
+    document.getElementById("searchInput");
+
+
+    if(!searchBox){
+        return;
+    }
+
+
+    const value =
+    searchBox.value.toLowerCase();
+
+
+
+    const filtered =
+    allMembers.filter((member)=>{
+
+
+        return (
+
+            (member.name || "")
+            .toLowerCase()
+            .includes(value)
+
+            ||
+
+            (member.phone || "")
+            .toLowerCase()
+            .includes(value)
+
+        );
+
+
+    });
+
+
+
+    displayMembers(filtered);
+
+
+}
+
+
+
+// Search Button
+
+const searchBtn =
+document.getElementById("searchBtn");
+
+
+if(searchBtn){
+
+    searchBtn.addEventListener(
+        "click",
+        searchMembers
+    );
+
+}
+
+
+
+// Enter press search
+
+const searchInput =
+document.getElementById("searchInput");
+
+
+if(searchInput){
+
+    searchInput.addEventListener(
+        "keyup",
+        function(e){
+
+            if(e.key === "Enter"){
+                searchMembers();
+            }
+
+        }
+    );
+
+}
