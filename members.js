@@ -67,6 +67,31 @@ async function loadMembers() {
 
         console.log("Members Loaded :", allMembers.length);
 
+for (const member of allMembers) {
+
+    const autoStatus = getStatus(member.expiryDate);
+
+    if (member.status !== autoStatus) {
+
+        try {
+
+            await updateDoc(doc(db, "members", member.id), {
+                status: autoStatus,
+                updatedAt: new Date()
+            });
+
+            member.status = autoStatus;
+
+        } catch (err) {
+
+            console.error("Auto Status Update Error:", err);
+
+        }
+
+    }
+
+}
+
         displayMembers(allMembers);
 
     }
@@ -119,7 +144,7 @@ function displayMembers(members) {
 
     members.forEach((member, index) => {
 
-        const status = member.status || getStatus(member.expiryDate);
+        const status = getStatus(member.expiryDate);
 
         tbody.innerHTML += `
         <tr>
