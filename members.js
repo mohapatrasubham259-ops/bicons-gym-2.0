@@ -310,3 +310,85 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+
+// ===========================
+// PART 2
+// ADD MEMBER
+// ===========================
+
+// Popup Elements
+const addModal = document.getElementById("addModal");
+const addBtn = document.getElementById("addMemberBtn");
+const addSaveBtn = document.getElementById("addSaveBtn");
+
+// Open Popup
+if (addBtn) {
+    addBtn.addEventListener("click", () => {
+        addModal.style.display = "flex";
+    });
+}
+
+// Close Popup
+window.closeAddModal = function () {
+    addModal.style.display = "none";
+};
+
+// Save Member
+async function saveMember() {
+
+    const name = document.getElementById("newName").value.trim();
+    const phone = document.getElementById("newPhone").value.trim();
+    const age = document.getElementById("newAge").value;
+    const plan = document.getElementById("newPlan").value;
+    const amount = document.getElementById("newAmount").value;
+    const paymentDate = document.getElementById("newPaymentDate").value;
+    const expiryDate = document.getElementById("newExpiryDate").value;
+
+    if (!name || !phone) {
+        alert("Please enter Name and Phone Number");
+        return;
+    }
+
+    const status = getStatus(expiryDate);
+
+    try {
+
+        await addDoc(collection(db, "members"), {
+            name,
+            phone,
+            age,
+            plan,
+            amount,
+            paymentDate,
+            expiryDate,
+            status,
+            createdAt: Date.now()
+        });
+
+        alert("Member Added Successfully ✅");
+
+        addModal.style.display = "none";
+
+        document.getElementById("newName").value = "";
+        document.getElementById("newPhone").value = "";
+        document.getElementById("newAge").value = "";
+        document.getElementById("newPlan").value = "";
+        document.getElementById("newAmount").value = "";
+        document.getElementById("newPaymentDate").value = "";
+        document.getElementById("newExpiryDate").value = "";
+
+        await loadMembers();
+
+    } catch (err) {
+
+        console.error(err);
+        alert("Error adding member");
+
+    }
+
+}
+
+// Save Button
+if (addSaveBtn) {
+    addSaveBtn.addEventListener("click", saveMember);
+}
