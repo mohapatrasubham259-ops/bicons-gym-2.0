@@ -493,3 +493,20 @@ window.deleteMember = async function(id){
     }
 
 }
+
+// ===============================
+// OPEN ADD MEMBER POPUP
+// ===============================
+
+const addBtn = document.getElementById("addMemberBtn");
+
+if(addBtn){
+
+    addBtn.onclick = function(){
+
+        document.getElementById("addModal")
+        .style.display = "flex";
+
+    }
+
+}
