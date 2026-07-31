@@ -205,3 +205,89 @@ document.addEventListener("DOMContentLoaded",()=>{
     );
 
 });
+
+// ===========================
+// ADD MEMBER POPUP
+// ===========================
+
+const addModal = document.getElementById("addModal");
+const addBtn = document.getElementById("addMemberBtn");
+const addSaveBtn = document.getElementById("addSaveBtn");
+
+if(addBtn){
+
+    addBtn.addEventListener("click",()=>{
+
+        addModal.style.display="flex";
+
+    });
+
+}
+
+window.closeAddModal=function(){
+
+    addModal.style.display="none";
+
+}
+
+
+// ===========================
+// SAVE MEMBER
+// ===========================
+
+if(addSaveBtn){
+
+addSaveBtn.addEventListener("click",saveMember);
+
+}
+
+
+async function saveMember(){
+
+const name=document.getElementById("newName").value.trim();
+const phone=document.getElementById("newPhone").value.trim();
+const age=document.getElementById("newAge").value;
+const plan=document.getElementById("newPlan").value;
+const amount=document.getElementById("newAmount").value;
+const paymentDate=document.getElementById("newPaymentDate").value;
+const expiryDate=document.getElementById("newExpiryDate").value;
+
+if(name=="" || phone==""){
+
+alert("Name and Phone Required");
+
+return;
+
+}
+
+const status=getStatus(expiryDate);
+
+await addDoc(collection(db,"members"),{
+
+name,
+phone,
+age,
+plan,
+amount,
+paymentDate,
+expiryDate,
+status,
+createdAt:Date.now()
+
+});
+
+alert("Member Added Successfully ✅");
+
+closeAddModal();
+
+document.getElementById("newName").value="";
+document.getElementById("newPhone").value="";
+document.getElementById("newAge").value="";
+document.getElementById("newPlan").value="";
+document.getElementById("newAmount").value="";
+document.getElementById("newPaymentDate").value="";
+document.getElementById("newExpiryDate").value="";
+
+await loadMembers();
+
+}
