@@ -101,7 +101,7 @@ text-decoration:none;
 
 <input id="age" type="number" placeholder="Age" required>
 
-<select id="plan" required onchange="updatePlan()">
+<select id="plan" onchange="updatePlan()" required>
     <option value="">Select Membership Plan</option>
     <option value="Joining">Joining + Monthly</option>
     <option value="Monthly">Monthly</option>
@@ -152,6 +152,7 @@ const db = getFirestore(app);
 window.updatePlan = function () {
 
     const plan = document.getElementById("plan").value;
+    console.log("Selected Plan:", plan);
     const amount = document.getElementById("amount");
     const paymentDate = document.getElementById("paymentDate");
     const expiryDate = document.getElementById("expiryDate");
