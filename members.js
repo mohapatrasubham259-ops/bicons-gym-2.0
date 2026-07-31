@@ -370,3 +370,69 @@ window.closeAddModal = function () {
 window.closeAddModal = function () {
     document.getElementById("addModal").style.display = "none";
 };
+
+// =======================================
+// PART 6B - SAVE NEW MEMBER
+// =======================================
+
+const addSaveBtn = document.getElementById("addSaveBtn");
+
+if (addSaveBtn) {
+
+    addSaveBtn.addEventListener("click", async () => {
+
+        try {
+
+            const memberData = {
+
+                registrationNo: "BG" + Date.now(),
+
+                name: document.getElementById("newName").value.trim(),
+
+                phone: document.getElementById("newPhone").value.trim(),
+
+                age: document.getElementById("newAge").value.trim(),
+
+                plan: document.getElementById("newPlan").value,
+
+                amount: document.getElementById("newAmount").value,
+
+                paymentDate: document.getElementById("newPaymentDate").value,
+
+                expiryDate: document.getElementById("newExpiryDate").value,
+
+                status: document.getElementById("newStatus").value,
+
+                createdAt: new Date()
+
+            };
+
+            // Basic validation
+            if (
+                !memberData.name ||
+                !memberData.phone ||
+                !memberData.plan
+            ) {
+                alert("Please fill all required fields.");
+                return;
+            }
+
+            await addDoc(collection(db, "members"), memberData);
+
+            alert("Member Added Successfully ✅");
+
+            closeAddModal();
+
+            await loadMembers();
+
+        } catch (err) {
+
+            console.error(err);
+
+            alert("Failed to Add Member");
+
+        }
+
+    });
+
+}
