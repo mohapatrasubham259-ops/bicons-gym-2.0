@@ -198,3 +198,87 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+
+// =======================================
+// PART 3 - EDIT & DELETE
+// =======================================
+
+let currentMemberId = "";
+
+// Open Edit Modal
+window.editMember = function(id){
+
+    currentMemberId = id;
+
+    const member = allMembers.find(m => m.id === id);
+
+    if(!member) return;
+
+    document.getElementById("editPlan").value = member.plan || "";
+    document.getElementById("editAmount").value = member.amount || "";
+    document.getElementById("editStatus").value = member.status || "Pending";
+
+    document.getElementById("editModal").style.display = "flex";
+
+}
+
+// Close Modal
+window.closeModal = function(){
+
+    document.getElementById("editModal").style.display = "none";
+
+}
+
+// Update Member
+window.updateMember = async function(){
+
+    try{
+
+        await updateDoc(doc(db,"members",currentMemberId),{
+
+            plan: document.getElementById("editPlan").value,
+            amount: document.getElementById("editAmount").value,
+            status: document.getElementById("editStatus").value
+
+        });
+
+        alert("Member Updated Successfully ✅");
+
+        closeModal();
+
+        await loadMembers();
+
+    }catch(err){
+
+        console.error(err);
+
+        alert("Update Failed");
+
+    }
+
+}
+
+// Delete Member
+window.deleteMember = async function(id){
+
+    const ok = confirm("Delete this member?");
+
+    if(!ok) return;
+
+    try{
+
+        await deleteDoc(doc(db,"members",id));
+
+        alert("Member Deleted Successfully ✅");
+
+        await loadMembers();
+
+    }catch(err){
+
+        console.error(err);
+
+        alert("Delete Failed");
+
+    }
+
+}
