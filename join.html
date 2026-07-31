@@ -196,23 +196,20 @@ document.querySelector("form").addEventListener("submit", async (e)=>{
     plan: document.getElementById("plan").value,
     amount: document.getElementById("amount").value,
 
-    status: "Pending",
-    paymentDate: "",
-    expiryDate: "",
+    status: document.getElementById("status").value,
+paymentDate: document.getElementById("paymentDate").value,
+expiryDate: document.getElementById("expiryDate").value,
 
     createdAt: new Date()
 
 };
 
-const docRef = await addDoc(collection(db, "members"), memberData);
-console.log("Member Saved:", docRef.id);
+  await addDoc(collection(db, "members"), memberData);
 
-alert("Registration Successful!");
-console.log("Redirecting to payment...");
+alert("Registration Successful! ✅");
 
-window.location.href =
-`payment.html?id=${docRef.id}&plan=${encodeURIComponent(memberData.plan)}`;
-    }catch(err){
+document.querySelector("form").reset();  
+}catch(err){
 
         alert("Error : "+err.message);
         console.log(err);
