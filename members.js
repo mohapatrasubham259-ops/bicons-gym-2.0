@@ -578,7 +578,6 @@ window.closeAddModal = function(){
 
 };
 
-alert("members.js loaded");
 
 // ===============================
 // ADD MEMBER SAVE
