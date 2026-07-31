@@ -155,7 +155,15 @@ function displayMembers(members) {
 
     members.forEach((member, index) => {
 
-        const status = getStatus(member.expiryDate);
+       await updateDoc(doc(db, "members", currentMemberId), {
+
+    plan: document.getElementById("editPlan").value,
+    amount: document.getElementById("editAmount").value,
+    status: document.getElementById("editStatus").value,
+
+    updatedAt: new Date()
+
+});
 
         tbody.innerHTML += `
         <tr>
@@ -226,14 +234,7 @@ window.updateMember = async function () {
 
     try {
 
-        await updateDoc(doc(db, "members", currentMemberId), {
-
-            plan: document.getElementById("editPlan").value,
-            amount: document.getElementById("editAmount").value,
-            status: document.getElementById("editStatus").value,
-            updatedAt: new Date()
-
-        });
+        
 
         alert("Member Updated Successfully ✅");
 
