@@ -81,7 +81,7 @@ function displayMembers(data) {
 
   tbody.innerHTML = "";
 
-  data.forEach((member) => {
+  data.forEach((member, index) => {
 
     let status = member.status || "Pending";
 
@@ -93,7 +93,7 @@ function displayMembers(data) {
     tbody.innerHTML += `
       <tr>
 
-        <td>${member.registrationNo || "-"}</td>
+       
 
         <td>${member.name || "-"}</td>
 
@@ -340,7 +340,14 @@ if (status === "Paid") {
     updateData.expiryDate = expiry.toISOString().split("T")[0];
 }
 
-      await updateDoc(doc(db, "members", editId), updateData);
+
+    console.log("Plan =", plan);
+    console.log("Status =", status);
+    console.log("Update Data =", updateData);
+
+     await updateDoc(doc(db, "members", editId), updateData);
+
+      
 
       alert("Member Updated Successfully ✅");
 
