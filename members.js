@@ -303,41 +303,42 @@ if (saveBtn) {
         status
       };
 
-      // Pending -> Paid
-      if (status === "Paid") {
+      // Update payment date & expiry whenever status is Paid
+if (status === "Paid") {
 
-        const today = new Date();
+    const today = new Date();
 
-        const paymentDate = today.toISOString().split("T")[0];
+    today.setHours(0, 0, 0, 0);
 
-        const expiry = new Date(today);
+    updateData.paymentDate = today.toISOString().split("T")[0];
 
-        switch (plan) {
+    const expiry = new Date(today);
 
-          case "Monthly":
+    switch (plan) {
+
+        case "Joining":
+        case "Monthly":
             expiry.setMonth(expiry.getMonth() + 1);
             break;
 
-          case "3 Months":
+        case "3 Months":
             expiry.setMonth(expiry.getMonth() + 3);
             break;
 
-          case "6 Months":
+        case "6 Months":
             expiry.setMonth(expiry.getMonth() + 6);
             break;
 
-          case "12 Months":
+        case "12 Months":
             expiry.setFullYear(expiry.getFullYear() + 1);
             break;
 
-        }
+        default:
+            expiry.setMonth(expiry.getMonth() + 1);
+    }
 
-        const expiryDate = expiry.toISOString().split("T")[0];
-
-        updateData.paymentDate = paymentDate;
-        updateData.expiryDate = expiryDate;
-
-      }
+    updateData.expiryDate = expiry.toISOString().split("T")[0];
+}
 
       await updateDoc(doc(db, "members", editId), updateData);
 
@@ -399,7 +400,13 @@ async function checkAutoStatus() {
     const expiry = new Date(member.expiryDate);
     expiry.setHours(0, 0, 0, 0);
 
-    const newStatus = expiry < today ? "Pending" : "Paid";
+  if (member.status === "Paid" && expiry < today) {
+
+    await updateDoc(doc(db, "members", member.id), {
+        status: "Pending"
+    });
+
+}
 
     if (member.status !== newStatus) {
 
