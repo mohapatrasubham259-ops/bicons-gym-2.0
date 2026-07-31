@@ -41,6 +41,9 @@ const db = getFirestore(app);
 
 let allMembers = [];
 
+async function loadMembers(){
+
+}
 
 // ===============================
 // LOAD MEMBERS
