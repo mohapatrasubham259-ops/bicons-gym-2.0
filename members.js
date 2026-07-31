@@ -291,3 +291,22 @@ document.getElementById("newExpiryDate").value="";
 await loadMembers();
 
 }
+document.addEventListener("DOMContentLoaded", () => {
+
+    const addBtn = document.getElementById("addMemberBtn");
+    const addModal = document.getElementById("addModal");
+
+    console.log(addBtn);
+    console.log(addModal);
+
+    if(addBtn && addModal){
+
+        addBtn.addEventListener("click", () => {
+
+            addModal.style.display = "flex";
+
+        });
+
+    }
+
+});
