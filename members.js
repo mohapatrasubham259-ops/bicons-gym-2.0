@@ -392,3 +392,90 @@ async function saveMember() {
 if (addSaveBtn) {
     addSaveBtn.addEventListener("click", saveMember);
 }
+
+// ===========================
+// PART 3
+// EDIT + DELETE
+// ===========================
+
+// Open Edit Popup
+window.editMember = function(id){
+
+    const member = allMembers.find(m => m.id === id);
+
+    if(!member) return;
+
+    document.getElementById("editModal").style.display = "flex";
+
+    document.getElementById("editPlan").value = member.plan || "";
+    document.getElementById("editAmount").value = member.amount || "";
+    document.getElementById("editStatus").value = member.status || "Pending";
+
+    document.getElementById("editModal").dataset.id = id;
+
+}
+
+
+// Close Edit Popup
+window.closeModal = function(){
+
+    document.getElementById("editModal").style.display = "none";
+
+}
+
+
+// Update Member
+window.updateMember = async function(){
+
+    const id = document.getElementById("editModal").dataset.id;
+
+    try{
+
+        await updateDoc(doc(db,"members",id),{
+
+            plan:document.getElementById("editPlan").value,
+            amount:document.getElementById("editAmount").value,
+            status:document.getElementById("editStatus").value
+
+        });
+
+        alert("Member Updated ✅");
+
+        closeModal();
+
+        await loadMembers();
+
+    }catch(err){
+
+        console.error(err);
+
+        alert("Update Failed");
+
+    }
+
+}
+
+
+
+// Delete Member
+window.deleteMember = async function(id){
+
+    if(!confirm("Delete this member?")) return;
+
+    try{
+
+        await deleteDoc(doc(db,"members",id));
+
+        alert("Member Deleted ✅");
+
+        await loadMembers();
+
+    }catch(err){
+
+        console.error(err);
+
+        alert("Delete Failed");
+
+    }
+
+}
