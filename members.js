@@ -130,7 +130,7 @@ ${getAutoStatus(member.expiryDate)}
 </td> 
 
         <td>
-            <td>
+            
 
 <button 
 onclick="editMember('${member.id}')">
