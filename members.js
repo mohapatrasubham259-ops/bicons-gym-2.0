@@ -398,7 +398,11 @@ async function checkAutoStatus() {
       status: newStatus
     });
 
-  
+  } catch (err) {
+
+    console.error(err);
+
+  }
 
 }
 
