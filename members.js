@@ -6,9 +6,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/fireba
 import {
     getFirestore,
     collection,
-    getDocs
+    getDocs,
+    doc,
+    updateDoc,
+    deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-
 
 // Firebase Config
 
@@ -123,12 +125,16 @@ function displayMembers(data){
 
         <td>${member.expiryDate || "-"}</td>
 
-        <td>${member.status || "Pending"}</td>
+       <td class="${getStatusClass(member.expiryDate)}">
+${getAutoStatus(member.expiryDate)}
+</td> 
 
         <td>
-            <button class="editBtn">
-            Edit
-            </button>
+            <button 
+class="editBtn"
+onclick="editMember('${member.id}')">
+Edit
+</button>
         </td>
 
 
@@ -240,5 +246,195 @@ if(searchInput){
 
         }
     );
+
+}
+
+// ===============================
+// EDIT MEMBER
+// ===============================
+
+
+window.editMember = function(id){
+
+
+    const member =
+    allMembers.find(
+        item => item.id === id
+    );
+
+
+    if(!member) return;
+
+
+    document.getElementById("editModal")
+    .style.display="block";
+
+
+    document.getElementById("editPlan").value =
+    member.plan || "Monthly";
+
+
+    document.getElementById("editAmount").value =
+    member.amount || "";
+
+
+    document.getElementById("editStatus").value =
+    member.status || "Pending";
+
+
+    // save id
+    document.getElementById("editModal")
+    .setAttribute("data-id",id);
+
+
+}
+
+
+
+
+// ===============================
+// UPDATE MEMBER
+// ===============================
+
+
+window.updateMember = async function(){
+
+
+    const id =
+    document.getElementById("editModal")
+    .getAttribute("data-id");
+
+
+    await updateDoc(
+        doc(db,"members",id),
+        {
+
+            plan:
+            document.getElementById("editPlan").value,
+
+
+            amount:
+            document.getElementById("editAmount").value,
+
+
+            status:
+            document.getElementById("editStatus").value
+
+        }
+    );
+
+
+    alert("Member Updated ✅");
+
+
+    document.getElementById("editModal")
+    .style.display="none";
+
+
+    loadMembers();
+
+
+}
+
+
+// Delete Member
+
+window.deleteMember = async function(id){
+
+
+    if(confirm("Delete this member?")){
+
+
+        await deleteDoc(
+            doc(db,"members",id)
+        );
+
+
+        location.reload();
+
+    }
+
+}
+
+
+
+// Auto Status Check
+
+function checkStatus(expiryDate){
+
+
+    if(!expiryDate)
+    return "Pending";
+
+
+    let today =
+    new Date();
+
+
+    let expiry =
+    new Date(expiryDate);
+
+
+
+    if(expiry < today){
+
+        return "Pending";
+
+    }
+    else{
+
+        return "Paid";
+
+    }
+
+
+}
+// ===============================
+// AUTO STATUS
+// ===============================
+
+
+function getAutoStatus(expiryDate){
+
+
+    if(!expiryDate){
+        return "Pending";
+    }
+
+
+    const today = new Date();
+
+    const expiry = new Date(expiryDate);
+
+
+    if(expiry >= today){
+
+        return "Paid";
+
+    }
+    else{
+
+        return "Pending";
+
+    }
+
+}
+
+
+
+
+function getStatusClass(expiryDate){
+
+
+    if(getAutoStatus(expiryDate) === "Paid"){
+
+        return "paid";
+
+    }
+    else{
+
+        return "pending";
+
+    }
 
 }
