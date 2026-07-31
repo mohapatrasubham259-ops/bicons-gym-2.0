@@ -375,11 +375,13 @@ window.closeAddModal = function () {
 // PART 6B - SAVE NEW MEMBER
 // =======================================
 
-const addSaveBtn = document.getElementById("addSaveBtn");
+window.addEventListener("DOMContentLoaded", () => {
 
-if (addSaveBtn) {
+    const addSaveBtn = document.getElementById("addSaveBtn");
 
-    addSaveBtn.addEventListener("click", async () => {
+    if (!addSaveBtn) return;
+
+    addSaveBtn.onclick = async function () {
 
         try {
 
@@ -388,30 +390,22 @@ if (addSaveBtn) {
                 registrationNo: "BG" + Date.now(),
 
                 name: document.getElementById("newName").value.trim(),
-
                 phone: document.getElementById("newPhone").value.trim(),
-
                 age: document.getElementById("newAge").value.trim(),
-
                 plan: document.getElementById("newPlan").value,
-
                 amount: document.getElementById("newAmount").value,
-
                 paymentDate: document.getElementById("newPaymentDate").value,
-
                 expiryDate: document.getElementById("newExpiryDate").value,
-
                 status: document.getElementById("newStatus").value,
 
                 createdAt: new Date()
 
             };
 
-            // Basic validation
             if (
-                !memberData.name ||
-                !memberData.phone ||
-                !memberData.plan
+                memberData.name === "" ||
+                memberData.phone === "" ||
+                memberData.plan === ""
             ) {
                 alert("Please fill all required fields.");
                 return;
@@ -421,18 +415,17 @@ if (addSaveBtn) {
 
             alert("Member Added Successfully ✅");
 
-            closeAddModal();
+            document.getElementById("addModal").style.display = "none";
 
             await loadMembers();
 
         } catch (err) {
 
             console.error(err);
-
-            alert("Failed to Add Member");
+            alert(err.message);
 
         }
 
-    });
+    };
 
-}
+});
