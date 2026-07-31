@@ -308,38 +308,25 @@ if (status === "Paid") {
 
     const today = new Date();
 
-    today.setHours(0, 0, 0, 0);
+    const paymentDate = today.toISOString().split("T")[0];
 
-    updateData.paymentDate = today.toISOString().split("T")[0];
+    let expiry = new Date(today);
 
-    const expiry = new Date(today);
+    const planText = plan.toLowerCase();
 
-    switch (plan) {
-
-        case "Joining":
-        case "Monthly":
-            expiry.setMonth(expiry.getMonth() + 1);
-            break;
-
-        case "3 Months":
-            expiry.setMonth(expiry.getMonth() + 3);
-            break;
-
-        case "6 Months":
-            expiry.setMonth(expiry.getMonth() + 6);
-            break;
-
-        case "12 Months":
-            expiry.setFullYear(expiry.getFullYear() + 1);
-            break;
-
-        default:
-            expiry.setMonth(expiry.getMonth() + 1);
+    if (planText.includes("joining") || planText.includes("monthly")) {
+        expiry.setMonth(expiry.getMonth() + 1);
+    } else if (planText.includes("3")) {
+        expiry.setMonth(expiry.getMonth() + 3);
+    } else if (planText.includes("6")) {
+        expiry.setMonth(expiry.getMonth() + 6);
+    } else if (planText.includes("12")) {
+        expiry.setFullYear(expiry.getFullYear() + 1);
     }
 
+    updateData.paymentDate = paymentDate;
     updateData.expiryDate = expiry.toISOString().split("T")[0];
 }
-
 
     console.log("Plan =", plan);
     console.log("Status =", status);
