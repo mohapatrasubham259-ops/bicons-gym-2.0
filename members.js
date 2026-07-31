@@ -11,15 +11,16 @@ import {
 
 
 // Firebase Config
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "bicon-gym.firebaseapp.com",
-    projectId: "bicon-gym",
-    storageBucket: "bicon-gym.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDJ3gjoxKgNTOpLZS-Qg0mrPmp3TVJV7HM",
+  authDomain: "bicon-gym.firebaseapp.com",
+  projectId: "bicon-gym",
+  storageBucket: "bicon-gym.firebasestorage.app",
+  messagingSenderId: "64202444264",
+  appId: "1:64202444264:web:9e3c1c1519431cdbb5a85d",
+  measurementId: "G-HY45R5RJQ4"
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
