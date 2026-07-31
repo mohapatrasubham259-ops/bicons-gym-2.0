@@ -415,6 +415,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
             alert("Member Added Successfully ✅");
 
+// Form Clear
+document.getElementById("newName").value = "";
+document.getElementById("newPhone").value = "";
+document.getElementById("newAge").value = "";
+document.getElementById("newPlan").value = "";
+document.getElementById("newAmount").value = "";
+document.getElementById("newPaymentDate").value = "";
+document.getElementById("newExpiryDate").value = "";
+document.getElementById("newStatus").value = "Pending";
+
+// Popup Close
+document.getElementById("addModal").style.display = "none";
+
+// Refresh Members List
+await loadMembers();
+
             document.getElementById("addModal").style.display = "none";
 
             await loadMembers();
