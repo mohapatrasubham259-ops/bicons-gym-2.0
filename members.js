@@ -289,7 +289,7 @@ if (status === "Paid") {
     const today = new Date();
 
     // Local Date (India)
-    const paymentDate = today.toLocaleDateString("en-CA");
+    const paymentDate = new Date().toISOString().split("T")[0];
 
     let expiry = new Date(today);
 
@@ -305,8 +305,7 @@ if (status === "Paid") {
         expiry.setFullYear(expiry.getFullYear() + 1);
     }
 
-    const expiryDate = expiry.toLocaleDateString("en-CA");
-
+   const expiryDate = expiry.toISOString().split("T")[0];
     updateData.paymentDate = paymentDate;
     updateData.expiryDate = expiryDate;
 }
