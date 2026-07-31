@@ -7,6 +7,7 @@ import {
     getFirestore,
     collection,
     getDocs,
+    addDoc,
     doc,
     updateDoc,
     deleteDoc
@@ -578,3 +579,64 @@ window.closeAddModal = function(){
 };
 
 alert("members.js loaded");
+
+// ===============================
+// ADD MEMBER SAVE
+// ===============================
+
+const addSaveBtn = document.getElementById("addSaveBtn");
+
+
+if(addSaveBtn){
+
+    addSaveBtn.onclick = async function(){
+
+
+        const newMember = {
+
+            name:
+            document.getElementById("newName").value,
+
+            phone:
+            document.getElementById("newPhone").value,
+
+            age:
+            document.getElementById("newAge").value,
+
+            plan:
+            document.getElementById("newPlan").value,
+
+            amount:
+            document.getElementById("newAmount").value,
+
+            paymentDate:
+            document.getElementById("newPaymentDate").value,
+
+            expiryDate:
+            document.getElementById("newExpiryDate").value,
+
+            status:
+            document.getElementById("newStatus").value
+
+        };
+
+
+        await addDoc(
+            collection(db,"members"),
+            newMember
+        );
+
+
+        alert("Member Added ✅");
+
+
+        document.getElementById("addModal")
+        .style.display="none";
+
+
+        loadMembers();
+
+
+    };
+
+}
