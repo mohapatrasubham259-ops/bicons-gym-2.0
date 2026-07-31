@@ -41,9 +41,6 @@ const db = getFirestore(app);
 
 let allMembers = [];
 
-async function loadMembers(){
-
-}
 
 // ===============================
 // LOAD MEMBERS
@@ -219,7 +216,7 @@ window.editMember = function(id){
 
     document.getElementById("editPlan").value = member.plan || "";
     document.getElementById("editAmount").value = member.amount || "";
-    document.getElementById("editStatus").value = member.status || "Pending";
+    document.getElementById("editStatus").value = getStatus(member.expiryDate);
 
     document.getElementById("editModal").style.display = "flex";
 
