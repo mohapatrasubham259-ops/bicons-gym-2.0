@@ -90,42 +90,22 @@ function displayMembers(data) {
         ? "status-paid"
         : "status-pending";
 
-    tbody.innerHTML += `
-      <tr>
-
-       
-
-        <td>${member.name || "-"}</td>
-
-        <td>${member.phone || "-"}</td>
-
-        <td>${member.age || "-"}</td>
-
-        <td>${member.plan || "-"}</td>
-
-        <td>₹${member.amount || "-"}</td>
-
-        <td>${member.paymentDate || "-"}</td>
-
-        <td>${member.expiryDate || "-"}</td>
-
-        <td class="${statusClass}">
-          ${status}
-        </td>
-
-        <td>
-
-          <button onclick="editMember('${member.id}')">
-            Edit
-          </button>
-
-          <button onclick="deleteMember('${member.id}')">
-            Delete
-          </button>
-
-        </td>
-
-      </tr>
+   <tbody>
+<tr>
+    <td>${index + 1}</td>
+    <td>${member.name || "-"}</td>
+    <td>${member.phone || "-"}</td>
+    <td>${member.age || "-"}</td>
+    <td>${member.plan || "-"}</td>
+    <td>₹${member.amount || "-"}</td>
+    <td>${member.paymentDate || "-"}</td>
+    <td>${member.expiryDate || "-"}</td>
+    <td class="${statusClass}">${status}</td>
+    <td>
+        <button onclick="editMember('${member.id}')">Edit</button>
+        <button onclick="deleteMember('${member.id}')">Delete</button>
+    </td>
+</tr>
     `;
 
   });
