@@ -238,7 +238,8 @@ window.updateMember = async function(){
 
             plan: document.getElementById("editPlan").value,
             amount: document.getElementById("editAmount").value,
-            status: document.getElementById("editStatus").value
+            status: document.getElementById("editStatus").value,
+updatedAt: new Date()
 
         });
 
