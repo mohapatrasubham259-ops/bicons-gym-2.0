@@ -438,3 +438,6 @@ function getStatusClass(expiryDate){
     }
 
 }
+window.addEventListener("DOMContentLoaded", () => {
+    loadMembers();
+});
