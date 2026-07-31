@@ -315,14 +315,32 @@ window.deleteMember = async function(id){
 // ADD MEMBER POPUP
 // ===============================
 
-const addBtn = document.getElementById("addMemberBtn");
+document.addEventListener("DOMContentLoaded", () => {
 
-if (addBtn) {
-    addBtn.addEventListener("click", () => {
-        document.getElementById("addModal").style.display = "flex";
-    });
+    const addBtn = document.getElementById("addMemberBtn");
+
+    if (addBtn) {
+
+        addBtn.addEventListener("click", openAddModal);
+        addBtn.addEventListener("touchstart", openAddModal);
+
+    }
+
+});
+
+function openAddModal(e) {
+
+    if (e) e.preventDefault();
+
+    document.getElementById("addModal").style.display = "flex";
+
 }
 
+window.closeAddModal = function () {
+
+    document.getElementById("addModal").style.display = "none";
+
+}
 window.closeAddModal = function () {
     document.getElementById("addModal").style.display = "none";
 };
