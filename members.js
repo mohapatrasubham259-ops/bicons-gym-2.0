@@ -429,3 +429,46 @@ window.addEventListener("DOMContentLoaded", () => {
     };
 
 });
+// ==============================
+// ADD MEMBER SAVE
+// ==============================
+
+window.onload = function () {
+
+    document.getElementById("addSaveBtn").onclick = async function () {
+
+        try {
+
+            await addDoc(collection(db, "members"), {
+
+                registrationNo: "BG" + Date.now(),
+
+                name: document.getElementById("newName").value,
+                phone: document.getElementById("newPhone").value,
+                age: document.getElementById("newAge").value,
+                plan: document.getElementById("newPlan").value,
+                amount: document.getElementById("newAmount").value,
+                paymentDate: document.getElementById("newPaymentDate").value,
+                expiryDate: document.getElementById("newExpiryDate").value,
+                status: document.getElementById("newStatus").value,
+
+                createdAt: new Date()
+
+            });
+
+            alert("Member Added Successfully ✅");
+
+            document.getElementById("addModal").style.display = "none";
+
+            loadMembers();
+
+        } catch (e) {
+
+            console.error(e);
+            alert(e.message);
+
+        }
+
+    };
+
+};
