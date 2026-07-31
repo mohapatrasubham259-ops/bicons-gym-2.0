@@ -308,7 +308,9 @@ if (status === "Paid") {
 
     const today = new Date();
 
-    const paymentDate = today.toISOString().split("T")[0];
+    const paymentDate = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+).toISOString().split("T")[0];
 
     let expiry = new Date(today);
 
@@ -325,7 +327,10 @@ if (status === "Paid") {
     }
 
     updateData.paymentDate = paymentDate;
-    updateData.expiryDate = expiry.toISOString().split("T")[0];
+   updateData.expiryDate = new Date(
+    expiry.getTime() - expiry.getTimezoneOffset() * 60000
+).toISOString().split("T")[0];
+
 }
 
     console.log("Plan =", plan);
