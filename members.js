@@ -337,39 +337,6 @@ if (addMemberBtn) {
     });
 };
 
-// ===============================
-// ADD MEMBER POPUP
-// ===============================
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const addBtn = document.getElementById("addMemberBtn");
-
-    if (addBtn) {
-
-        addBtn.addEventListener("click", openAddModal);
-        addBtn.addEventListener("touchstart", openAddModal);
-
-    }
-
-});
-
-function openAddModal(e) {
-
-    if (e) e.preventDefault();
-
-    document.getElementById("addModal").style.display = "flex";
-
-}
-
-window.closeAddModal = function () {
-
-    document.getElementById("addModal").style.display = "none";
-
-}
-window.closeAddModal = function () {
-    document.getElementById("addModal").style.display = "none";
-};
 
 // =======================================
 // PART 6B - SAVE NEW MEMBER
@@ -419,18 +386,15 @@ window.addEventListener("DOMContentLoaded", () => {
 document.getElementById("newName").value = "";
 document.getElementById("newPhone").value = "";
 document.getElementById("newAge").value = "";
-document.getElementById("newPlan").value = "";
+document.getElementById("newPlan").selectedIndex = 0;
 document.getElementById("newAmount").value = "";
 document.getElementById("newPaymentDate").value = "";
 document.getElementById("newExpiryDate").value = "";
 document.getElementById("newStatus").value = "Pending";
 
-// Popup Close
 document.getElementById("addModal").style.display = "none";
 
-// Refresh Members List
 await loadMembers();
-
             document.getElementById("addModal").style.display = "none";
 
             await loadMembers();
@@ -445,46 +409,3 @@ await loadMembers();
     };
 
 });
-// ==============================
-// ADD MEMBER SAVE
-// ==============================
-
-window.onload = function () {
-
-    document.getElementById("addSaveBtn").onclick = async function () {
-
-        try {
-
-            await addDoc(collection(db, "members"), {
-
-                registrationNo: "BG" + Date.now(),
-
-                name: document.getElementById("newName").value,
-                phone: document.getElementById("newPhone").value,
-                age: document.getElementById("newAge").value,
-                plan: document.getElementById("newPlan").value,
-                amount: document.getElementById("newAmount").value,
-                paymentDate: document.getElementById("newPaymentDate").value,
-                expiryDate: document.getElementById("newExpiryDate").value,
-                status: document.getElementById("newStatus").value,
-
-                createdAt: new Date()
-
-            });
-
-            alert("Member Added Successfully ✅");
-
-            document.getElementById("addModal").style.display = "none";
-
-            loadMembers();
-
-        } catch (e) {
-
-            console.error(e);
-            alert(e.message);
-
-        }
-
-    };
-
-};
