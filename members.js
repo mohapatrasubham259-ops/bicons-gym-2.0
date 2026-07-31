@@ -90,11 +90,13 @@ function getStatus(expiryDate) {
     if (!expiryDate) return "Pending";
 
     const today = new Date();
+    today.setHours(0,0,0,0);
+
     const expiry = new Date(expiryDate);
+    expiry.setHours(0,0,0,0);
 
     return expiry >= today ? "Paid" : "Pending";
 }
-
 // Status Class
 function getStatusClass(status) {
 
@@ -117,7 +119,7 @@ function displayMembers(members) {
 
     members.forEach((member, index) => {
 
-        const status = getStatus(member.expiryDate);
+        const status = member.status || getStatus(member.expiryDate);
 
         tbody.innerHTML += `
         <tr>
