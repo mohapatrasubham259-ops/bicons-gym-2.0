@@ -32,6 +32,15 @@ button{
     border:none;
     border-radius:6px;
 }
+.modal-box button{
+
+    position:relative;
+
+    z-index:10001;
+
+    touch-action:manipulation;
+
+}
 
 #addMemberBtn{
     background:#ff3c00;
@@ -103,10 +112,33 @@ tr:nth-child(odd){
     justify-content:center;
     align-items:center;
 
-    z-index:999;
+    z-index:9999;
 
     padding:15px;
     box-sizing:border-box;
+
+}
+
+
+.modal-box{
+
+    background:white;
+    color:black;
+
+    width:95%;
+    max-width:350px;
+
+    max-height:90vh;
+    overflow-y:auto;
+
+    padding:20px;
+
+    border-radius:10px;
+
+    position:relative;
+
+    z-index:10000;
+
 
 }
 
