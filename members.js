@@ -1,8 +1,8 @@
-// ===============================
+// ======================================
 // BICON GYM - MEMBERS.JS
-// PART 1A
-// Firebase + Load Members
-// ===============================
+// PART 1
+// Firebase + Load + Search
+// ======================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
@@ -16,10 +16,9 @@ import {
     doc
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
-
-// ===============================
-// FIREBASE CONFIG
-// ===============================
+// ======================================
+// FIREBASE
+// ======================================
 
 const firebaseConfig = {
     apiKey: "AIzaSyDJ3gjoxKgNTOpLZS-Qg0mrPmp3TVJV7HM",
@@ -34,25 +33,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-
-// ===============================
-// GLOBAL VARIABLES
-// ===============================
+// ======================================
+// GLOBAL
+// ======================================
 
 let allMembers = [];
+let currentMemberId = "";
 
-
-// ===============================
+// ======================================
 // LOAD MEMBERS
-// ===============================
+// ======================================
 
 async function loadMembers() {
 
     try {
 
-        const snapshot = await getDocs(
-            collection(db, "members")
-        );
+        const snapshot = await getDocs(collection(db, "members"));
 
         allMembers = [];
 
@@ -65,134 +61,24 @@ async function loadMembers() {
 
         });
 
-        console.log("Members Loaded :", allMembers.length);
-
-for (const member of allMembers) {
-
-    const autoStatus = getStatus(member.expiryDate);
-
-    if (member.status !== autoStatus) {
-
-        try {
-
-            await updateDoc(doc(db, "members", member.id), {
-                status: autoStatus,
-                updatedAt: new Date()
-            });
-
-            member.status = autoStatus;
-
-        } catch (err) {
-
-            console.error("Auto Status Update Error:", err);
-
-        }
-
-    }
-
-}
+        console.log("Members :", allMembers.length);
 
         displayMembers(allMembers);
 
+    } catch (err) {
+
+        console.error(err);
+
+        alert("Failed to load members.");
+
     }
 
-    catch (error) {
-
-        console.error("Load Error :", error);
-
-    }
-
 }
 
-// ===============================
-// PART 1B
-// DISPLAY + SEARCH + STATUS
-// ===============================
+// ======================================
+// SEARCH
+// ======================================
 
-// Auto Status
-function getStatus(expiryDate) {
-
-    if (!expiryDate) return "Pending";
-
-    const today = new Date();
-    today.setHours(0,0,0,0);
-
-    const expiry = new Date(expiryDate);
-    expiry.setHours(0,0,0,0);
-
-    return expiry >= today ? "Paid" : "Pending";
-}
-// Status Class
-function getStatusClass(status) {
-
-    return status === "Paid"
-        ? "status-paid"
-        : "status-pending";
-}
-
-// Display Members
-function displayMembers(members) {
-
-    const tbody = document.getElementById("memberTableBody");
-
-    if (!tbody) {
-        console.error("memberTableBody not found");
-        return;
-    }
-
-    tbody.innerHTML = "";
-
-    members.forEach((member, index) => {
-
-        const status = getStatus(member.expiryDate);
-
-        tbody.innerHTML += `
-        <tr>
-
-            <td>${index + 1}</td>
-
-            <td>${member.name || ""}</td>
-
-            <td>${member.phone || ""}</td>
-
-            <td>${member.age || ""}</td>
-
-            <td>${member.plan || ""}</td>
-
-            <td>${member.amount || ""}</td>
-
-            <td>${member.paymentDate || ""}</td>
-
-            <td>${member.expiryDate || ""}</td>
-
-            <td>
-                <span class="${getStatusClass(status)}">
-                    ${status}
-                </span>
-            </td>
-
-            <td>
-
-                <button onclick="editMember('${member.id}')">
-                    Edit
-                </button>
-
-                <button
-                    style="background:red;color:white;"
-                    onclick="deleteMember('${member.id}')">
-                    Delete
-                </button>
-
-            </td>
-
-        </tr>
-        `;
-
-    });
-
-}
-
-// Search
 window.searchMembers = function () {
 
     const value = document
@@ -213,33 +99,114 @@ window.searchMembers = function () {
 
 };
 
-// Start
+// ======================================
+// START
+// ======================================
+
 document.addEventListener("DOMContentLoaded", () => {
 
     loadMembers();
 
-    const searchBtn = document.getElementById("searchBtn");
+    const searchInput = document.getElementById("searchInput");
 
-    if (searchBtn) {
-        searchBtn.addEventListener("click", searchMembers);
+    if (searchInput) {
+
+        searchInput.addEventListener("input", searchMembers);
+
     }
 
 });
+// ======================================
+// PART 2
+// DISPLAY + STATUS + EDIT + DELETE
+// ======================================
 
-// =======================================
-// PART 3 - EDIT & DELETE
-// =======================================
+// Auto Status
+function getStatus(expiryDate) {
 
-let currentMemberId = "";
+    if (!expiryDate || expiryDate.trim() === "") {
+        return "Pending";
+    }
 
-// Open Edit Modal
-window.editMember = function(id){
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const expiry = new Date(expiryDate);
+    expiry.setHours(0, 0, 0, 0);
+
+    return expiry >= today ? "Paid" : "Pending";
+}
+
+// Badge Class
+function getStatusClass(status) {
+    return status === "Paid"
+        ? "status-paid"
+        : "status-pending";
+}
+
+// Display Table
+function displayMembers(members) {
+
+    const tbody = document.getElementById("memberTableBody");
+
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
+    members.forEach((member, index) => {
+
+        const status = getStatus(member.expiryDate);
+
+        tbody.innerHTML += `
+        <tr>
+
+            <td>${index + 1}</td>
+            <td>${member.name || ""}</td>
+            <td>${member.phone || ""}</td>
+            <td>${member.age || ""}</td>
+            <td>${member.plan || ""}</td>
+            <td>${member.amount || ""}</td>
+            <td>${member.paymentDate || ""}</td>
+            <td>${member.expiryDate || ""}</td>
+
+            <td>
+                <span class="${getStatusClass(status)}">
+                    ${status}
+                </span>
+            </td>
+
+            <td>
+
+                <button onclick="editMember('${member.id}')">
+                    Edit
+                </button>
+
+                <button
+                    style="background:red;color:white"
+                    onclick="deleteMember('${member.id}')">
+                    Delete
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+}
+
+// ======================================
+// EDIT MEMBER
+// ======================================
+
+window.editMember = function (id) {
 
     currentMemberId = id;
 
     const member = allMembers.find(m => m.id === id);
 
-    if(!member) return;
+    if (!member) return;
 
     document.getElementById("editPlan").value = member.plan || "";
     document.getElementById("editAmount").value = member.amount || "";
@@ -247,26 +214,24 @@ window.editMember = function(id){
 
     document.getElementById("editModal").style.display = "flex";
 
-}
+};
 
-// Close Modal
-window.closeModal = function(){
+window.closeModal = function () {
 
     document.getElementById("editModal").style.display = "none";
 
-}
+};
 
-// Update Member
-window.updateMember = async function(){
+window.updateMember = async function () {
 
-    try{
+    try {
 
-        await updateDoc(doc(db,"members",currentMemberId),{
+        await updateDoc(doc(db, "members", currentMemberId), {
 
             plan: document.getElementById("editPlan").value,
             amount: document.getElementById("editAmount").value,
             status: document.getElementById("editStatus").value,
-updatedAt: new Date()
+            updatedAt: new Date()
 
         });
 
@@ -274,9 +239,9 @@ updatedAt: new Date()
 
         closeModal();
 
-        await loadMembers();
+        loadMembers();
 
-    }catch(err){
+    } catch (err) {
 
         console.error(err);
 
@@ -284,24 +249,25 @@ updatedAt: new Date()
 
     }
 
-}
+};
 
-// Delete Member
-window.deleteMember = async function(id){
+// ======================================
+// DELETE MEMBER
+// ======================================
 
-    const ok = confirm("Delete this member?");
+window.deleteMember = async function (id) {
 
-    if(!ok) return;
+    if (!confirm("Delete this member?")) return;
 
-    try{
+    try {
 
-        await deleteDoc(doc(db,"members",id));
+        await deleteDoc(doc(db, "members", id));
 
         alert("Member Deleted Successfully ✅");
 
-        await loadMembers();
+        loadMembers();
 
-    }catch(err){
+    } catch (err) {
 
         console.error(err);
 
@@ -309,46 +275,38 @@ window.deleteMember = async function(id){
 
     }
 
-}
-
-// =======================================
-// PART 6A - ADD MEMBER POPUP
-// =======================================
-
-window.closeAddModal = function () {
-    document.getElementById("addModal").style.display = "none";
 };
+// ======================================
+// PART 3
+// ADD MEMBER
+// ======================================
 
+// Open Popup
 const addMemberBtn = document.getElementById("addMemberBtn");
 
 if (addMemberBtn) {
+
     addMemberBtn.addEventListener("click", () => {
 
-        document.getElementById("newName").value = "";
-        document.getElementById("newPhone").value = "";
-        document.getElementById("newAge").value = "";
-        document.getElementById("newPlan").value = "";
-        document.getElementById("newAmount").value = "";
-        document.getElementById("newPaymentDate").value = "";
-        document.getElementById("newExpiryDate").value = "";
-        document.getElementById("newStatus").value = "Pending";
-
         document.getElementById("addModal").style.display = "flex";
+
     });
+
+}
+
+// Close Popup
+window.closeAddModal = function () {
+
+    document.getElementById("addModal").style.display = "none";
+
 };
 
+// Save Member
+const addSaveBtn = document.getElementById("addSaveBtn");
 
-// =======================================
-// PART 6B - SAVE NEW MEMBER
-// =======================================
+if (addSaveBtn) {
 
-window.addEventListener("DOMContentLoaded", () => {
-
-    const addSaveBtn = document.getElementById("addSaveBtn");
-
-    if (!addSaveBtn) return;
-
-    addSaveBtn.onclick = async function () {
+    addSaveBtn.addEventListener("click", async () => {
 
         try {
 
@@ -369,6 +327,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
             };
 
+            // Validation
             if (
                 memberData.name === "" ||
                 memberData.phone === "" ||
@@ -382,30 +341,29 @@ window.addEventListener("DOMContentLoaded", () => {
 
             alert("Member Added Successfully ✅");
 
-// Form Clear
-document.getElementById("newName").value = "";
-document.getElementById("newPhone").value = "";
-document.getElementById("newAge").value = "";
-document.getElementById("newPlan").selectedIndex = 0;
-document.getElementById("newAmount").value = "";
-document.getElementById("newPaymentDate").value = "";
-document.getElementById("newExpiryDate").value = "";
-document.getElementById("newStatus").value = "Pending";
+            // Form Reset
+            document.getElementById("newName").value = "";
+            document.getElementById("newPhone").value = "";
+            document.getElementById("newAge").value = "";
+            document.getElementById("newPlan").selectedIndex = 0;
+            document.getElementById("newAmount").value = "";
+            document.getElementById("newPaymentDate").value = "";
+            document.getElementById("newExpiryDate").value = "";
+            document.getElementById("newStatus").value = "Pending";
 
-document.getElementById("addModal").style.display = "none";
+            // Close Popup
+            closeAddModal();
 
-await loadMembers();
-            document.getElementById("addModal").style.display = "none";
-
+            // Refresh Table
             await loadMembers();
 
         } catch (err) {
 
             console.error(err);
-            alert(err.message);
+            alert("Failed to Add Member");
 
         }
 
-    };
+    });
 
-});
+}
