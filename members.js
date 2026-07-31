@@ -311,6 +311,32 @@ window.deleteMember = async function(id){
 
 }
 
+// =======================================
+// PART 6A - ADD MEMBER POPUP
+// =======================================
+
+window.closeAddModal = function () {
+    document.getElementById("addModal").style.display = "none";
+};
+
+const addMemberBtn = document.getElementById("addMemberBtn");
+
+if (addMemberBtn) {
+    addMemberBtn.addEventListener("click", () => {
+
+        document.getElementById("newName").value = "";
+        document.getElementById("newPhone").value = "";
+        document.getElementById("newAge").value = "";
+        document.getElementById("newPlan").value = "";
+        document.getElementById("newAmount").value = "";
+        document.getElementById("newPaymentDate").value = "";
+        document.getElementById("newExpiryDate").value = "";
+        document.getElementById("newStatus").value = "Pending";
+
+        document.getElementById("addModal").style.display = "flex";
+    });
+};
+
 // ===============================
 // ADD MEMBER POPUP
 // ===============================
