@@ -130,11 +130,21 @@ ${getAutoStatus(member.expiryDate)}
 </td> 
 
         <td>
-            <button 
-class="editBtn"
+            <td>
+
+<button 
 onclick="editMember('${member.id}')">
 Edit
 </button>
+
+
+<button 
+onclick="deleteMember('${member.id}')"
+style="background:red;color:white;margin-left:5px;">
+Delete
+</button>
+
+
         </td>
 
 
@@ -458,5 +468,28 @@ window.closeAddModal = function(){
 
     document.getElementById("addModal")
     .style.display = "none";
+
+}
+
+// ===============================
+// DELETE MEMBER
+// ===============================
+
+window.deleteMember = async function(id){
+
+    if(confirm("Delete this member?")){
+
+
+        await deleteDoc(
+            doc(db,"members",id)
+        );
+
+
+        alert("Member Deleted ✅");
+
+
+        loadMembers();
+
+    }
 
 }
