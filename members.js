@@ -408,21 +408,21 @@ async function checkAutoStatus() {
 
 }
 
-    if (member.status !== newStatus) {
+   if (member.status !== newStatus) {
 
-      try {
+  try {
 
-        await updateDoc(doc(db, "members", member.id), {
-          status: newStatus
-        });
+    await updateDoc(doc(db, "members", member.id), {
+      status: newStatus
+    });
 
-      } catch (err) {
+  } catch (err) {
 
-        console.error(err);
+    console.error(err);
 
-      }
+  }
 
-    }
+}
 
   }
 
