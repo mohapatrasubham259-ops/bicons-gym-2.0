@@ -90,7 +90,7 @@ function displayMembers(data) {
         ? "status-paid"
         : "status-pending";
 
- tbody.innerHTML += `
+tbody.innerHTML += `
 <tr>
     <td>${index + 1}</td>
     <td>${member.name || "-"}</td>
@@ -108,9 +108,6 @@ function displayMembers(data) {
         <button onclick="deleteMember('${member.id}')">Delete</button>
     </td>
 </tr>
-`;
-    `;
-
   });
 
 }
@@ -291,9 +288,8 @@ if (status === "Paid") {
 
     const today = new Date();
 
-    const paymentDate = new Date(
-    today.getTime() - today.getTimezoneOffset() * 60000
-).toISOString().split("T")[0];
+    // Local Date (India)
+    const paymentDate = today.toLocaleDateString("en-CA");
 
     let expiry = new Date(today);
 
@@ -309,13 +305,11 @@ if (status === "Paid") {
         expiry.setFullYear(expiry.getFullYear() + 1);
     }
 
+    const expiryDate = expiry.toLocaleDateString("en-CA");
+
     updateData.paymentDate = paymentDate;
-   updateData.expiryDate = new Date(
-    expiry.getTime() - expiry.getTimezoneOffset() * 60000
-).toISOString().split("T")[0];
-
+    updateData.expiryDate = expiryDate;
 }
-
     console.log("Plan =", plan);
     console.log("Status =", status);
     console.log("Update Data =", updateData);
@@ -387,22 +381,6 @@ async function checkAutoStatus() {
     await updateDoc(doc(db, "members", member.id), {
         status: "Pending"
     });
-
-}
-
-   if (member.status !== newStatus) {
-
-  try {
-
-    await updateDoc(doc(db, "members", member.id), {
-      status: newStatus
-    });
-
-  } catch (err) {
-
-    console.error(err);
-
-  }
 
 }
 
