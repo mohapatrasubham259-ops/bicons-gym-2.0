@@ -283,6 +283,46 @@ if (saveBtn) {
         status
       };
 
+if (status === "Paid") {
+
+    const today = new Date();
+
+    const paymentDate =
+        new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+        .toISOString()
+        .split("T")[0];
+
+    let expiry = new Date(today);
+
+    switch (plan) {
+
+        case "Joining":
+        case "Monthly":
+            expiry.setMonth(expiry.getMonth() + 1);
+            break;
+
+        case "3 Months":
+            expiry.setMonth(expiry.getMonth() + 3);
+            break;
+
+        case "6 Months":
+            expiry.setMonth(expiry.getMonth() + 6);
+            break;
+
+        case "12 Months":
+            expiry.setFullYear(expiry.getFullYear() + 1);
+            break;
+    }
+
+    const expiryDate =
+        new Date(expiry.getTime() - expiry.getTimezoneOffset() * 60000)
+        .toISOString()
+        .split("T")[0];
+
+    updateData.paymentDate = paymentDate;
+    updateData.expiryDate = expiryDate;
+}
+
       // Update payment date & expiry whenever status is Paid
 if (status === "Paid") {
 
