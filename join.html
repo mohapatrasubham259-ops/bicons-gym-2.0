@@ -101,7 +101,6 @@ text-decoration:none;
 
 <input id="age" type="number" placeholder="Age" required>
 
-<input id="email" type="email" placeholder="Email Address" required>
 
 <select id="plan" required onchange="updatePlan()">
     <option value="">Select Membership Plan</option>
@@ -199,7 +198,7 @@ document.querySelector("form").addEventListener("submit", async (e)=>{
     amount: document.getElementById("amount").value,
 
     status: "Pending",
-    paymentDate: "",
+    paymentDate: "",s
     expiryDate: "",
 
     createdAt: new Date()
