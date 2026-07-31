@@ -277,36 +277,28 @@ window.deleteMember = async function (id) {
 
 };
 // ======================================
-// PART 3
-// ADD MEMBER
+// PART 4
+// FINAL EVENT BINDING
 // ======================================
 
-// Open Popup
-const addMemberBtn = document.getElementById("addMemberBtn");
+document.addEventListener("DOMContentLoaded", () => {
 
-if (addMemberBtn) {
+    // Load Members
+    loadMembers();
 
-    addMemberBtn.addEventListener("click", () => {
+    // Search
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) {
+        searchInput.addEventListener("input", searchMembers);
+    }
 
+    // Add Member Popup
+    document.getElementById("addMemberBtn").onclick = () => {
         document.getElementById("addModal").style.display = "flex";
+    };
 
-    });
-
-}
-
-// Close Popup
-window.closeAddModal = function () {
-
-    document.getElementById("addModal").style.display = "none";
-
-};
-
-// Save Member
-const addSaveBtn = document.getElementById("addSaveBtn");
-
-if (addSaveBtn) {
-
-    addSaveBtn.addEventListener("click", async () => {
+    // Save Member
+    document.getElementById("addSaveBtn").onclick = async () => {
 
         try {
 
@@ -327,12 +319,7 @@ if (addSaveBtn) {
 
             };
 
-            // Validation
-            if (
-                memberData.name === "" ||
-                memberData.phone === "" ||
-                memberData.plan === ""
-            ) {
+            if (!memberData.name || !memberData.phone || !memberData.plan) {
                 alert("Please fill all required fields.");
                 return;
             }
@@ -341,7 +328,7 @@ if (addSaveBtn) {
 
             alert("Member Added Successfully ✅");
 
-            // Form Reset
+            // Reset Fields
             document.getElementById("newName").value = "";
             document.getElementById("newPhone").value = "";
             document.getElementById("newAge").value = "";
@@ -351,19 +338,17 @@ if (addSaveBtn) {
             document.getElementById("newExpiryDate").value = "";
             document.getElementById("newStatus").value = "Pending";
 
-            // Close Popup
             closeAddModal();
 
-            // Refresh Table
             await loadMembers();
 
         } catch (err) {
 
             console.error(err);
-            alert("Failed to Add Member");
+            alert(err.message);
 
         }
 
-    });
+    };
 
-}
+});
