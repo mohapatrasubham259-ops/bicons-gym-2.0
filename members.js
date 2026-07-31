@@ -540,3 +540,39 @@ window.closeAddModal = function(){
     .style.display="none";
 
 }
+
+// ADD MEMBER POPUP OPEN
+
+window.onload = function(){
+
+    const addBtn = document.getElementById("addMemberBtn");
+    const addModal = document.getElementById("addModal");
+
+
+    if(addBtn && addModal){
+
+        addBtn.onclick = function(){
+
+            addModal.style.display = "flex";
+
+        };
+
+    }
+
+};
+
+
+// ADD MEMBER POPUP CLOSE
+
+window.closeAddModal = function(){
+
+    const addModal =
+    document.getElementById("addModal");
+
+    if(addModal){
+
+        addModal.style.display = "none";
+
+    }
+
+};
