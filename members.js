@@ -90,7 +90,7 @@ function displayMembers(data) {
         ? "status-paid"
         : "status-pending";
 
-   <tbody>
+ tbody.innerHTML += `
 <tr>
     <td>${index + 1}</td>
     <td>${member.name || "-"}</td>
@@ -100,12 +100,15 @@ function displayMembers(data) {
     <td>₹${member.amount || "-"}</td>
     <td>${member.paymentDate || "-"}</td>
     <td>${member.expiryDate || "-"}</td>
-    <td class="${statusClass}">${status}</td>
+    <td class="${statusClass}">
+        ${status}
+    </td>
     <td>
         <button onclick="editMember('${member.id}')">Edit</button>
         <button onclick="deleteMember('${member.id}')">Delete</button>
     </td>
 </tr>
+`;
     `;
 
   });
@@ -395,11 +398,7 @@ async function checkAutoStatus() {
       status: newStatus
     });
 
-  } catch (err) {
-
-    console.error(err);
-
-  }
+  
 
 }
 
