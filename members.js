@@ -155,16 +155,7 @@ function displayMembers(members) {
 
     members.forEach((member, index) => {
 
-       await updateDoc(doc(db, "members", currentMemberId), {
-
-    plan: document.getElementById("editPlan").value,
-    amount: document.getElementById("editAmount").value,
-    status: document.getElementById("editStatus").value,
-
-    updatedAt: new Date()
-
-});
-
+       const status = getStatus(member.expiryDate);
         tbody.innerHTML += `
         <tr>
 
