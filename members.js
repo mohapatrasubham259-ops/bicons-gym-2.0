@@ -308,21 +308,25 @@ window.deleteMember = async function (id) {
 
 // Open Add Popup
 window.openAddModal = function () {
-    document.getElementById("addModal").style.display = "flex";
+    const modal = document.getElementById("addModal");
+    modal.style.display = "flex";
 };
 
-// Close Add Popup
 window.closeAddModal = function () {
-    document.getElementById("addModal").style.display = "none";
+    const modal = document.getElementById("addModal");
+    modal.style.display = "none";
 };
-
 // Wait until page loads
 document.addEventListener("DOMContentLoaded", () => {
 
     const addBtn = document.getElementById("addMemberBtn");
 
     if (addBtn) {
+
         addBtn.addEventListener("click", openAddModal);
+
+        addBtn.addEventListener("touchstart", openAddModal);
+
     }
 
 });
