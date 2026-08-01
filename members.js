@@ -308,23 +308,21 @@ window.deleteMember = async function (id) {
 
 // Open Add Popup
 window.openAddModal = function () {
-
     document.getElementById("addModal").style.display = "flex";
-
 };
 
 // Close Add Popup
 window.closeAddModal = function () {
-
     document.getElementById("addModal").style.display = "none";
-
 };
 
-// Add Button
-const addBtn = document.getElementById("addMemberBtn");
+// Wait until page loads
+document.addEventListener("DOMContentLoaded", () => {
 
-if (addBtn) {
+    const addBtn = document.getElementById("addMemberBtn");
 
-    addBtn.onclick = openAddModal;
+    if (addBtn) {
+        addBtn.addEventListener("click", openAddModal);
+    }
 
-}
+});
