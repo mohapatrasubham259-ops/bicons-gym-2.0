@@ -332,23 +332,27 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ======================================
-// PART 5 - ADD MEMBER SAVE
+// PART 5 - ADD MEMBER SAVE (MOBILE SUPPORT)
 // ======================================
 
 document.addEventListener("DOMContentLoaded", () => {
 
     const addSaveBtn = document.getElementById("addSaveBtn");
 
-    if (!addSaveBtn) return;
+    if (!addSaveBtn) {
+        console.log("addSaveBtn not found");
+        return;
+    }
 
-    addSaveBtn.onclick = async function () {
+    async function saveMember(e) {
+
+        if (e) e.preventDefault();
 
         try {
 
             const memberData = {
 
                 registrationNo: "BG" + Date.now(),
-
                 name: document.getElementById("newName").value.trim(),
                 phone: document.getElementById("newPhone").value.trim(),
                 age: document.getElementById("newAge").value.trim(),
@@ -366,6 +370,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Please fill all required fields.");
                 return;
             }
+
+            addSaveBtn.disabled = true;
 
             await addDoc(collection(db, "members"), memberData);
 
@@ -387,10 +393,17 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
 
             console.error(err);
-            alert(err.message);
+            alert("Error : " + err.message);
+
+        } finally {
+
+            addSaveBtn.disabled = false;
 
         }
 
-    };
+    }
+
+    addSaveBtn.addEventListener("click", saveMember);
+    addSaveBtn.addEventListener("touchend", saveMember);
 
 });
