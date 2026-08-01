@@ -190,3 +190,92 @@ function displayMembers(members) {
     });
 
 }
+
+// ======================================
+// PART 3 - EDIT MEMBER
+// ======================================
+
+// Open Edit Popup
+window.editMember = function (id) {
+
+    currentMemberId = id;
+
+    const member = allMembers.find(m => m.id === id);
+
+    if (!member) return;
+
+    document.getElementById("editPlan").value = member.plan || "";
+    document.getElementById("editAmount").value = member.amount || "";
+    document.getElementById("editStatus").value = member.status || "Pending";
+
+    document.getElementById("editModal").style.display = "flex";
+
+};
+
+// Close Edit Popup
+window.closeModal = function () {
+
+    document.getElementById("editModal").style.display = "none";
+
+};
+
+// Update Member
+window.updateMember = async function () {
+
+    try {
+
+        let paymentDate = "";
+        let expiryDate = "";
+
+        const status = document.getElementById("editStatus").value;
+        const plan = document.getElementById("editPlan").value;
+
+        // Pending → Paid
+        if (status === "Paid") {
+
+            const today = new Date();
+
+            paymentDate = today.toISOString().split("T")[0];
+
+            const expiry = new Date(today);
+
+            if (plan === "Joining" || plan === "Monthly") {
+                expiry.setDate(expiry.getDate() + 30);
+            }
+            else if (plan === "3 Months") {
+                expiry.setDate(expiry.getDate() + 90);
+            }
+            else if (plan === "6 Months") {
+                expiry.setDate(expiry.getDate() + 180);
+            }
+
+            expiryDate = expiry.toISOString().split("T")[0];
+
+        }
+
+        await updateDoc(doc(db, "members", currentMemberId), {
+
+            plan: plan,
+            amount: document.getElementById("editAmount").value,
+            status: status,
+            paymentDate: paymentDate,
+            expiryDate: expiryDate,
+            updatedAt: new Date()
+
+        });
+
+        alert("Member Updated Successfully ✅");
+
+        closeModal();
+
+        await loadMembers();
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("Update Failed");
+
+    }
+
+};
