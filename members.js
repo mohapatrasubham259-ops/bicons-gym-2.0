@@ -336,6 +336,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // ======================================
 
 const addSaveBtn = document.getElementById("addSaveBtn");
+addSaveBtn.addEventListener("touchstart", async function(e){
+    e.preventDefault();
+    addSaveBtn.click();
+});
+
 
 if (addSaveBtn) {
 
