@@ -279,3 +279,52 @@ window.updateMember = async function () {
     }
 
 };
+
+// ======================================
+// PART 4 - DELETE + ADD MEMBER
+// ======================================
+
+// Delete Member
+window.deleteMember = async function (id) {
+
+    if (!confirm("Delete this member?")) return;
+
+    try {
+
+        await deleteDoc(doc(db, "members", id));
+
+        alert("Member Deleted Successfully ✅");
+
+        await loadMembers();
+
+    } catch (err) {
+
+        console.error(err);
+        alert("Delete Failed");
+
+    }
+
+};
+
+// Open Add Popup
+window.openAddModal = function () {
+
+    document.getElementById("addModal").style.display = "flex";
+
+};
+
+// Close Add Popup
+window.closeAddModal = function () {
+
+    document.getElementById("addModal").style.display = "none";
+
+};
+
+// Add Button
+const addBtn = document.getElementById("addMemberBtn");
+
+if (addBtn) {
+
+    addBtn.onclick = openAddModal;
+
+}
