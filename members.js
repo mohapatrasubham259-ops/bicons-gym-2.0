@@ -111,3 +111,82 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+
+// ======================================
+// PART 2 - DISPLAY MEMBERS
+// ======================================
+
+// Auto Status
+function getStatus(expiryDate) {
+
+    if (!expiryDate || expiryDate.trim() === "") {
+        return "Pending";
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const expiry = new Date(expiryDate);
+    expiry.setHours(0, 0, 0, 0);
+
+    return expiry >= today ? "Paid" : "Pending";
+}
+
+// Badge Class
+function getStatusClass(status) {
+
+    return status === "Paid"
+        ? "status-paid"
+        : "status-pending";
+
+}
+
+// Display Members
+function displayMembers(members) {
+
+    const tbody = document.getElementById("memberTableBody");
+
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
+    members.forEach((member, index) => {
+
+        const status = getStatus(member.expiryDate);
+
+        tbody.innerHTML += `
+        <tr>
+
+            <td>${index + 1}</td>
+            <td>${member.name || ""}</td>
+            <td>${member.phone || ""}</td>
+            <td>${member.age || ""}</td>
+            <td>${member.plan || ""}</td>
+            <td>${member.amount || ""}</td>
+            <td>${member.paymentDate || ""}</td>
+            <td>${member.expiryDate || ""}</td>
+
+            <td>
+                <span class="${getStatusClass(status)}">
+                    ${status}
+                </span>
+            </td>
+
+            <td>
+                <button onclick="editMember('${member.id}')">
+                    Edit
+                </button>
+
+                <button
+                    style="background:red;color:white"
+                    onclick="deleteMember('${member.id}')">
+                    Delete
+                </button>
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+}
