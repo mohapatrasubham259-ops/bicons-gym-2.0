@@ -335,14 +335,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // PART 5 - ADD MEMBER SAVE
 // ======================================
 
-const addSaveBtn = document.getElementById("addSaveBtn");
-addSaveBtn.addEventListener("touchstart", async function(e){
-    e.preventDefault();
-    addSaveBtn.click();
-});
+document.addEventListener("DOMContentLoaded", () => {
 
+    const addSaveBtn = document.getElementById("addSaveBtn");
 
-if (addSaveBtn) {
+    if (!addSaveBtn) return;
 
     addSaveBtn.onclick = async function () {
 
@@ -374,7 +371,6 @@ if (addSaveBtn) {
 
             alert("Member Added Successfully ✅");
 
-            // Clear Form
             document.getElementById("newName").value = "";
             document.getElementById("newPhone").value = "";
             document.getElementById("newAge").value = "";
@@ -391,10 +387,10 @@ if (addSaveBtn) {
         } catch (err) {
 
             console.error(err);
-            alert("Error: " + err.message);
+            alert(err.message);
 
         }
 
     };
 
-}
+});
