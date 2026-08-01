@@ -330,3 +330,66 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+
+// ======================================
+// PART 5 - ADD MEMBER SAVE
+// ======================================
+
+const addSaveBtn = document.getElementById("addSaveBtn");
+
+if (addSaveBtn) {
+
+    addSaveBtn.onclick = async function () {
+
+        try {
+
+            const memberData = {
+
+                registrationNo: "BG" + Date.now(),
+
+                name: document.getElementById("newName").value.trim(),
+                phone: document.getElementById("newPhone").value.trim(),
+                age: document.getElementById("newAge").value.trim(),
+                plan: document.getElementById("newPlan").value,
+                amount: document.getElementById("newAmount").value,
+                paymentDate: document.getElementById("newPaymentDate").value,
+                expiryDate: document.getElementById("newExpiryDate").value,
+                status: document.getElementById("newStatus").value,
+
+                createdAt: new Date()
+
+            };
+
+            if (!memberData.name || !memberData.phone || !memberData.plan) {
+                alert("Please fill all required fields.");
+                return;
+            }
+
+            await addDoc(collection(db, "members"), memberData);
+
+            alert("Member Added Successfully ✅");
+
+            // Clear Form
+            document.getElementById("newName").value = "";
+            document.getElementById("newPhone").value = "";
+            document.getElementById("newAge").value = "";
+            document.getElementById("newPlan").selectedIndex = 0;
+            document.getElementById("newAmount").value = "";
+            document.getElementById("newPaymentDate").value = "";
+            document.getElementById("newExpiryDate").value = "";
+            document.getElementById("newStatus").value = "Pending";
+
+            closeAddModal();
+
+            await loadMembers();
+
+        } catch (err) {
+
+            console.error(err);
+            alert("Error: " + err.message);
+
+        }
+
+    };
+
+}
